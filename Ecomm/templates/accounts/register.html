@@ -1,0 +1,738 @@
+{% extends "base.html" %}
+<!-- Enforcing Newline After Block -->
+
+{% load static %}
+<!-- Enforcing Newline After Block -->
+
+{% block title %}{{ page_title }}{% endblock %}
+<!-- Enforcing Newline After Block -->
+{% block content %}
+<div class="register-auth-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-5 col-lg-6 col-md-7 col-sm-9">
+        <div class="register-auth-card">
+          <div class="register-auth-header">
+            <div class="register-auth-icon">
+              <i class="fas fa-user-plus"></i>
+            </div>
+            <h2>Create Account</h2>
+            <p>Join BlueWave Solutions today</p>
+          </div>
+
+          <!-- Display Messages -->
+          {% if messages %} {% for message in messages %}
+          <div
+            class="alert alert-{{ message.tags }} alert-dismissible fade show register-alert"
+            role="alert"
+          >
+            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+          {% endfor %} {% endif %}
+
+          <!-- Registration Form -->
+          <form method="post" class="register-auth-form" novalidate>
+            {% csrf_token %}
+
+            <!-- First Name Field - Full Width -->
+            <div class="register-form-group">
+              <label for="id_first_name" class="register-form-label">
+                <i class="fas fa-user"></i> First Name
+              </label>
+              <input
+                type="text"
+                name="first_name"
+                id="id_first_name"
+                class="register-form-control"
+                placeholder="Enter your first name"
+                value="{{ form_data.first_name|default:'' }}"
+                required
+              />
+              {% if form_errors.first_name %}
+              <div class="register-error-message">
+                {% for error in form_errors.first_name %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Last Name Field - Full Width -->
+            <div class="register-form-group">
+              <label for="id_last_name" class="register-form-label">
+                <i class="fas fa-user"></i> Last Name
+              </label>
+              <input
+                type="text"
+                name="last_name"
+                id="id_last_name"
+                class="register-form-control"
+                placeholder="Enter your last name"
+                value="{{ form_data.last_name|default:'' }}"
+                required
+              />
+              {% if form_errors.last_name %}
+              <div class="register-error-message">
+                {% for error in form_errors.last_name %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Username Field - Full Width -->
+            <div class="register-form-group">
+              <label for="id_username" class="register-form-label">
+                <i class="fas fa-at"></i> Username
+              </label>
+              <input
+                type="text"
+                name="username"
+                id="id_username"
+                class="register-form-control"
+                placeholder="Choose a unique username"
+                value="{{ form_data.username|default:'' }}"
+                required
+              />
+              {% if form_errors.username %}
+              <div class="register-error-message">
+                {% for error in form_errors.username %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Email Field - Full Width -->
+            <div class="register-form-group">
+              <label for="id_email" class="register-form-label">
+                <i class="fas fa-envelope"></i> Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="id_email"
+                class="register-form-control"
+                placeholder="Enter your email address"
+                value="{{ form_data.email|default:'' }}"
+                required
+              />
+              {% if form_errors.email %}
+              <div class="register-error-message">
+                {% for error in form_errors.email %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Password Field - Full Width with Eye Toggle -->
+            <div class="register-form-group">
+              <label for="id_password" class="register-form-label">
+                <i class="fas fa-lock"></i> Password
+              </label>
+              <div class="register-password-wrapper">
+                <input
+                  type="password"
+                  name="password"
+                  id="id_password"
+                  class="register-form-control register-password-input"
+                  placeholder="Create a strong password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="register-password-toggle"
+                  onclick="togglePassword('id_password', this)"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              {% if form_errors.password %}
+              <div class="register-error-message">
+                {% for error in form_errors.password %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+              <div class="register-form-hint">
+                <i class="fas fa-info-circle"></i>
+                Minimum 8 characters with letters and numbers
+              </div>
+            </div>
+
+            <!-- Confirm Password Field - Full Width with Eye Toggle -->
+            <div class="register-form-group">
+              <label for="id_confirm_password" class="register-form-label">
+                <i class="fas fa-lock"></i> Confirm Password
+              </label>
+              <div class="register-password-wrapper">
+                <input
+                  type="password"
+                  name="confirm_password"
+                  id="id_confirm_password"
+                  class="register-form-control register-password-input"
+                  placeholder="Confirm your password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="register-password-toggle"
+                  onclick="togglePassword('id_confirm_password', this)"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              {% if form_errors.confirm_password %}
+              <div class="register-error-message">
+                {% for error in form_errors.confirm_password %}{{ error }}
+                <!-- Enforcing Newline After Block -->
+                {% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Terms Checkbox -->
+            <div class="register-form-options">
+              <div class="register-terms-check">
+                <input
+                  type="checkbox"
+                  name="terms"
+                  id="id_terms"
+                  class="register-form-check-input"
+                  required
+                />
+                <label for="id_terms" class="register-terms-label">
+                  I agree to the
+                  <a href="#" class="register-auth-link">Terms of Service</a>
+                  and
+                  <a href="#" class="register-auth-link">Privacy Policy</a>
+                </label>
+              </div>
+              {% if form_errors.terms %}
+              <div class="register-error-message mt-2">
+                {% for error in form_errors.terms %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="register-auth-btn">
+              <i class="fas fa-user-plus"></i> Create Account
+            </button>
+          </form>
+
+          <div class="register-auth-footer">
+            <p>
+              Already have an account?
+              <a href="{% url 'login_page' %}" class="register-auth-link"
+                >Sign in here</a
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="register-auth-security">
+          <i class="fas fa-shield-alt"></i>
+          Your data is protected with enterprise-grade security
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* REGISTER PAGE SPECIFIC STYLES - ISOLATED WITH PREFIXES */
+
+  /* Auth Container - Scoped to register page only */
+  .register-auth-container {
+    min-height: calc(100vh - 120px) !important; /* Account for navbar height */
+    background: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 2rem 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .register-auth-card {
+    background: white !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 3rem !important;
+    margin: 1rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .register-auth-card::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 4px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  }
+
+  /* Header */
+  .register-auth-header {
+    text-align: center !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .register-auth-icon {
+    width: 80px !important;
+    height: 80px !important;
+    margin: 0 auto 1rem !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    animation: registerBounce 2s infinite !important;
+  }
+
+  .register-auth-icon i {
+    font-size: 2rem !important;
+    color: white !important;
+  }
+
+  .register-auth-header h2 {
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    color: #2d3748 !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .register-auth-header p {
+    color: #718096 !important;
+    font-size: 1rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  /* Form Styles */
+  .register-auth-form {
+    margin-bottom: 2rem !important;
+  }
+
+  .register-form-group {
+    margin-bottom: 1.5rem !important;
+    width: 100% !important;
+  }
+
+  .register-form-label {
+    display: block !important;
+    font-weight: 600 !important;
+    color: #2d3748 !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .register-form-label i {
+    margin-right: 0.5rem !important;
+    color: #667eea !important;
+  }
+
+  /* Full Width Form Controls */
+  .register-form-control {
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    color: #495057 !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 48px !important;
+  }
+
+  .register-form-control:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    background-color: #ffffff !important;
+  }
+
+  .register-form-control::placeholder {
+    color: #a0aec0 !important;
+    opacity: 1 !important;
+  }
+
+  /* Password Input Wrapper */
+  .register-password-wrapper {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .register-password-input {
+    padding-right: 3rem !important;
+  }
+
+  .register-password-toggle {
+    position: absolute !important;
+    right: 1rem !important;
+    background: none !important;
+    border: none !important;
+    color: #718096 !important;
+    cursor: pointer !important;
+    padding: 0.5rem !important;
+    font-size: 1rem !important;
+    transition: color 0.3s ease !important;
+    z-index: 10 !important;
+  }
+
+  .register-password-toggle:hover {
+    color: #667eea !important;
+  }
+
+  .register-password-toggle:focus {
+    outline: none !important;
+  }
+
+  .register-password-toggle.active {
+    color: #667eea !important;
+  }
+
+  /* Form Hint */
+  .register-form-hint {
+    font-size: 0.8rem !important;
+    color: #718096 !important;
+    margin-top: 0.5rem !important;
+    padding: 0.5rem !important;
+    background: #f7fafc !important;
+    border-radius: 6px !important;
+    border-left: 3px solid #667eea !important;
+  }
+
+  .register-form-hint i {
+    margin-right: 0.5rem !important;
+    color: #667eea !important;
+  }
+
+  /* Form Options */
+  .register-form-options {
+    margin-bottom: 2rem !important;
+  }
+
+  .register-terms-check {
+    display: flex !important;
+    align-items: flex-start !important;
+    gap: 0.5rem !important;
+  }
+
+  .register-form-check-input {
+    margin-top: 0.125rem !important;
+    accent-color: #667eea !important;
+    width: 16px !important;
+    height: 16px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .register-terms-label {
+    font-size: 0.875rem !important;
+    color: #718096 !important;
+    margin-bottom: 0 !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Auth Button */
+  .register-auth-btn {
+    width: 100% !important;
+    padding: 1rem !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .register-auth-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3) !important;
+  }
+
+  .register-auth-btn:active {
+    transform: translateY(0) !important;
+  }
+
+  .register-auth-btn i {
+    margin-right: 0.5rem !important;
+  }
+
+  /* Footer */
+  .register-auth-footer {
+    text-align: center !important;
+  }
+
+  .register-auth-footer p {
+    color: #718096 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .register-auth-link {
+    color: #667eea !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: color 0.3s ease !important;
+  }
+
+  .register-auth-link:hover {
+    color: #764ba2 !important;
+  }
+
+  /* Security Notice */
+  .register-auth-security {
+    text-align: center !important;
+    margin-top: 1.5rem !important;
+    color: #718096 !important;
+    font-size: 0.875rem !important;
+  }
+
+  .register-auth-security i {
+    margin-right: 0.5rem !important;
+  }
+
+  /* Error Messages */
+  .register-error-message {
+    color: #e53e3e !important;
+    font-size: 0.875rem !important;
+    margin-top: 0.5rem !important;
+    padding: 0.5rem !important;
+    background: #fed7d7 !important;
+    border: 1px solid #feb2b2 !important;
+    border-radius: 6px !important;
+  }
+
+  .register-error-message i {
+    margin-right: 0.5rem !important;
+  }
+
+  /* Register-specific alerts */
+  .register-alert {
+    border-radius: 12px !important;
+    border: none !important;
+    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .register-alert.alert-success {
+    background: #c6f6d5 !important;
+    color: #22543d !important;
+  }
+
+  .register-alert.alert-danger {
+    background: #fed7d7 !important;
+    color: #742a2a !important;
+  }
+
+  .register-alert.alert-warning {
+    background: #fefcbf !important;
+    color: #744210 !important;
+  }
+
+  .register-alert.alert-info {
+    background: #bee3f8 !important;
+    color: #2a4365 !important;
+  }
+
+  /* Register-specific animation */
+  @keyframes registerBounce {
+    0%,
+    100% {
+      transform: translateY(0) !important;
+    }
+    50% {
+      transform: translateY(-10px) !important;
+    }
+  }
+
+  /* Mobile responsiveness for register page */
+  @media (max-width: 768px) {
+    .register-auth-card {
+      padding: 2rem 1.5rem !important;
+      margin: 0.5rem !important;
+    }
+
+    .register-auth-header h2 {
+      font-size: 1.75rem !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .register-auth-card {
+      padding: 1.5rem 1rem !important;
+    }
+
+    .register-auth-icon {
+      width: 60px !important;
+      height: 60px !important;
+    }
+
+    .register-auth-icon i {
+      font-size: 1.5rem !important;
+    }
+  }
+
+  /* Force visibility for register form inputs */
+  .register-form-control {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Prevent any navbar interference */
+  .register-auth-container * {
+    box-sizing: border-box !important;
+  }
+
+  /* Override any potential Bootstrap conflicts for register page */
+  .register-auth-container .container {
+    max-width: 1200px !important;
+  }
+
+  .register-auth-container .row {
+    margin: 0 !important;
+  }
+
+  .register-auth-container .col-xl-5,
+  .register-auth-container .col-lg-6,
+  .register-auth-container .col-md-7,
+  .register-auth-container .col-sm-9 {
+    padding: 0 15px !important;
+  }
+
+  /* Additional spacing fixes */
+  .register-form-group:last-of-type {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .register-form-options {
+    margin-bottom: 2rem !important;
+  }
+
+  .register-auth-form {
+    margin-bottom: 2rem !important;
+  }
+
+  /* Ensure proper form validation styles */
+  .register-form-control.is-invalid {
+    border-color: #e53e3e !important;
+  }
+
+  .register-form-control.is-valid {
+    border-color: #10b981 !important;
+  }
+</style>
+
+<script>
+  function togglePassword(inputId, toggleButton) {
+    const passwordInput = document.getElementById(inputId);
+    const icon = toggleButton.querySelector("i");
+
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+      toggleButton.classList.add("active");
+    } else {
+      passwordInput.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+      toggleButton.classList.remove("active");
+    }
+  }
+
+  // Enhanced form validation
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.querySelector(".register-auth-form");
+    const passwordInput = document.getElementById("id_password");
+    const confirmPasswordInput = document.getElementById("id_confirm_password");
+
+    // Real-time password matching validation
+    function validatePasswordMatch() {
+      if (
+        confirmPasswordInput.value &&
+        passwordInput.value !== confirmPasswordInput.value
+      ) {
+        confirmPasswordInput.setCustomValidity("Passwords do not match");
+        confirmPasswordInput.style.borderColor = "#e53e3e";
+      } else {
+        confirmPasswordInput.setCustomValidity("");
+        confirmPasswordInput.style.borderColor = "#e2e8f0";
+      }
+    }
+
+    if (passwordInput && confirmPasswordInput) {
+      passwordInput.addEventListener("input", validatePasswordMatch);
+      confirmPasswordInput.addEventListener("input", validatePasswordMatch);
+
+      // Password strength indicator
+      passwordInput.addEventListener("input", function () {
+        const password = this.value;
+        const hint = this.parentElement.parentElement.querySelector(
+          ".register-form-hint"
+        );
+
+        if (hint) {
+          if (password.length === 0) {
+            hint.innerHTML =
+              '<i class="fas fa-info-circle"></i> Minimum 8 characters with letters and numbers';
+            hint.style.borderLeftColor = "#667eea";
+          } else if (password.length < 8) {
+            hint.innerHTML =
+              '<i class="fas fa-exclamation-triangle"></i> Password too short';
+            hint.style.borderLeftColor = "#e53e3e";
+          } else if (!/(?=.*[a-zA-Z])(?=.*\d)/.test(password)) {
+            hint.innerHTML =
+              '<i class="fas fa-exclamation-triangle"></i> Include both letters and numbers';
+            hint.style.borderLeftColor = "#f59e0b";
+          } else {
+            hint.innerHTML =
+              '<i class="fas fa-check-circle"></i> Password looks good!';
+            hint.style.borderLeftColor = "#10b981";
+          }
+        }
+      });
+    }
+
+    // Form submission validation
+    if (form) {
+      form.addEventListener("submit", function (e) {
+        const requiredFields = form.querySelectorAll("input[required]");
+        let isValid = true;
+
+        requiredFields.forEach((field) => {
+          if (!field.value.trim()) {
+            field.style.borderColor = "#e53e3e";
+            isValid = false;
+          } else {
+            field.style.borderColor = "#e2e8f0";
+          }
+        });
+
+        if (!isValid) {
+          e.preventDefault();
+          alert("Please fill in all required fields.");
+        }
+      });
+    }
+
+    // Ensure register page doesn't interfere with navbar
+    document.body.classList.remove("navbar-conflict");
+
+    // Ensure proper spacing from navbar
+    const authContainer = document.querySelector(".register-auth-container");
+    if (authContainer) {
+      authContainer.style.paddingTop = "2rem";
+    }
+  });
+</script>
+{% endblock %}
