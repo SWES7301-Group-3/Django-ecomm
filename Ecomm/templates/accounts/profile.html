@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+<!-- Enforced Block Space -->
+{% load static %}
+<!-- Enforced Block Space -->
+{% block title %}{{ page_title }}{% endblock %}
+<!-- Enforced Block Space -->
+{% block content %}
+<div class="container mt-4">
+  <!-- Profile Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card bg-gradient-primary text-white shadow-lg">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col-md-8">
+              <h2 class="mb-1">
+                <i class="fas fa-user-circle me-2"></i>{{ user_data.full_name }}
+              </h2>
+              <p class="mb-0 opacity-75">
+                <i class="fas fa-calendar me-1"></i>Member since {{
+                user.date_joined|date:"F Y" }}
+              </p>
+            </div>
+            <div class="col-md-4 text-end">
+              <a href="{% url 'core:dashboard' %}" class="btn btn-light">
+                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Profile Information -->
+    <div class="col-lg-8 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-info-circle me-2"></i>Profile Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="profile-info">
+                <div class="info-item mb-3">
+                  <label class="fw-bold text-muted small">USERNAME</label>
+                  <div class="fw-semibold">{{ user_data.username }}</div>
+                </div>
+
+                <div class="info-item mb-3">
+                  <label class="fw-bold text-muted small">EMAIL ADDRESS</label>
+                  <div class="fw-semibold">
+                    <i class="fas fa-envelope me-1 text-muted"></i>{{
+                    user_data.email }}
+                  </div>
+                </div>
+
+                <div class="info-item mb-3">
+                  <label class="fw-bold text-muted small">FULL NAME</label>
+                  <div class="fw-semibold">
+                    {% if user.first_name or user.last_name %}
+                    <i class="fas fa-user me-1 text-muted"></i>{{
+                    user_data.first_name }} {{ user_data.last_name }} {% else %}
+                    <span class="text-muted fst-italic">Not provided</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="account-details">
+                <div class="info-item mb-3">
+                  <label class="fw-bold text-muted small">MEMBER SINCE</label>
+                  <div class="fw-semibold">
+                    <i class="fas fa-calendar-plus me-1 text-muted"></i>
+                    {{ user_data.date_joined|date:"F d, Y" }}
+                  </div>
+                </div>
+
+                <div class="info-item mb-3">
+                  <label class="fw-bold text-muted small">LAST LOGIN</label>
+                  <div class="fw-semibold">
+                    {% if user_data.last_login %}
+                    <i class="fas fa-sign-in-alt me-1 text-muted"></i>
+                    {{ user_data.last_login|date:"F d, Y g:i A" }} {% else %}
+                    <span class="text-muted fst-italic"
+                      >Never logged in before</span
+                    >
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="info-item mb-3">
+                  <label class="fw-bold text-muted small">ACCOUNT STATUS</label>
+                  <div class="fw-semibold">
+                    {% if user.is_active %}
+                    <span class="badge bg-success">
+                      <i class="fas fa-check-circle me-1"></i>Active
+                    </span>
+                    {% else %}
+                    <span class="badge bg-danger">
+                      <i class="fas fa-times-circle me-1"></i>Inactive
+                    </span>
+                    {% endif %} {% if user_stats.is_staff %}
+                    <span class="badge bg-primary ms-1">
+                      <i class="fas fa-user-shield me-1"></i>Staff
+                    </span>
+                    {% endif %} {% if user_stats.is_superuser %}
+                    <span class="badge bg-warning text-dark ms-1">
+                      <i class="fas fa-crown me-1"></i>Admin
+                    </span>
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="row mt-4">
+            <div class="col-12">
+              <div class="d-flex flex-wrap gap-2">
+                <a href="{% url 'edit_profile_view' %}" class="btn btn-primary">
+                  <i class="fas fa-edit me-2"></i>Edit Profile
+                </a>
+                <a
+                  href="{% url 'core:dashboard' %}"
+                  class="btn btn-outline-success"
+                >
+                  <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+                <a
+                  href="{% url 'products:product_list' %}"
+                  class="btn btn-outline-info"
+                >
+                  <i class="fas fa-shopping-bag me-2"></i>Shop Products
+                </a>
+                <a
+                  href="{% url 'logout_view' %}"
+                  class="btn btn-outline-danger"
+                >
+                  <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="col-lg-4 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-info text-white">
+          <h6 class="mb-0">
+            <i class="fas fa-chart-bar me-2"></i>Account Stats
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="stats-grid">
+            <div class="stat-item text-center p-3 border rounded mb-3">
+              <div class="fw-bold text-primary h5 mb-1">
+                {{ user_stats.days_since_joined }}
+              </div>
+              <small class="text-muted">Days as Member</small>
+            </div>
+
+            <div class="stat-item text-center p-3 border rounded mb-3">
+              <div class="fw-bold text-success h5 mb-1">
+                {% if user_stats.last_login_days is not None %} {{
+                user_stats.last_login_days }} {% else %} N/A {% endif %}
+              </div>
+              <small class="text-muted">Days Since Login</small>
+            </div>
+
+            <div class="stat-item text-center p-3 border rounded">
+              <div class="fw-bold text-info h5 mb-1">Active</div>
+              <small class="text-muted">Account Status</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  }
+
+  .profile-info .info-item,
+  .account-details .info-item {
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #f1f3f4;
+  }
+
+  .profile-info .info-item:last-child,
+  .account-details .info-item:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .card {
+    border: none;
+    border-radius: 10px;
+  }
+
+  .card-header {
+    border-radius: 10px 10px 0 0 !important;
+  }
+
+  @media (max-width: 768px) {
+    .container {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+  }
+</style>
+{% endblock %}

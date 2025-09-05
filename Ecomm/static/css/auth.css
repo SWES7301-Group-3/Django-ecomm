@@ -1,0 +1,219 @@
+/* Login & Registration Page Styles */
+.login-card,
+.registration-card {
+  border-radius: 20px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.login-icon i,
+.registration-icon i {
+  font-size: 3rem;
+  opacity: 0.8;
+}
+
+.form-floating > .form-control {
+  border-radius: 12px;
+  border: 2px solid #e9ecef;
+  transition: all 0.3s ease;
+  height: calc(3.5rem + 2px);
+  padding: 1rem 0.75rem;
+}
+
+.form-floating > .form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.15);
+  transform: translateY(-2px);
+}
+
+.form-floating > label {
+  color: #6c757d;
+  font-weight: 500;
+  padding: 1rem 0.75rem;
+}
+
+.login-btn,
+.register-btn {
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #0d6efd 0%, #0056b3 100%);
+  border: none;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-btn:hover,
+.register-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(13, 110, 253, 0.3);
+}
+
+.login-btn:active,
+.register-btn:active {
+  transform: translateY(0);
+}
+
+/* Loading State */
+.login-btn.loading .btn-text,
+.register-btn.loading .btn-text {
+  display: none;
+}
+
+.login-btn.loading .btn-loading,
+.register-btn.loading .btn-loading {
+  display: inline-block !important;
+}
+
+/* Social Buttons */
+.social-btn {
+  border-radius: 12px;
+  border: 2px solid #dee2e6;
+  color: #6c757d;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  padding: 10px 16px;
+}
+
+.social-btn:hover {
+  background-color: #f8f9fa;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+}
+
+/* Divider */
+.divider {
+  position: relative;
+  text-align: center;
+}
+
+.divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #dee2e6, transparent);
+}
+
+.divider-text {
+  background: white;
+  padding: 0 20px;
+  color: #6c757d;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Form Check */
+.form-check-input:checked {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.form-check-input {
+  border-radius: 4px;
+}
+
+/* Alert Styling */
+.alert {
+  border-radius: 12px;
+  border: none;
+  font-weight: 500;
+}
+
+.alert-danger {
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c2c7 100%);
+  color: #721c24;
+}
+
+.alert-success {
+  background: linear-gradient(135deg, #d1edff 0%, #b3d9ff 100%);
+  color: #0c5460;
+}
+
+/* Responsive Design */
+@media (max-width: 576px) {
+  .card-body {
+    padding: 2rem 1.5rem !important;
+  }
+
+  .login-icon i,
+  .registration-icon i {
+    font-size: 2.5rem;
+  }
+
+  .divider-text {
+    padding: 0 15px;
+  }
+
+  .d-flex.gap-3 {
+    gap: 1rem !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .card-body {
+    padding: 1.5rem 1rem !important;
+  }
+
+  .form-floating > .form-control {
+    font-size: 0.9rem;
+  }
+
+  .btn {
+    font-size: 0.875rem;
+  }
+}
+
+/* Animation for card entrance */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.login-card,
+.registration-card {
+  animation: slideInUp 0.6s ease-out;
+}
+
+/* Focus states for accessibility */
+.form-control:focus,
+.btn:focus,
+.form-check-input:focus {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+/* Loading spinner animation */
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner-border {
+  animation: spin 1s linear infinite;
+}
+
+/* Hover effects for links */
+a {
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  text-decoration: underline !important;
+}

@@ -1,0 +1,539 @@
+{% extends "base.html" %}
+<!-- Enforcing Newline After Block -->
+{% load static %}
+<!-- Enforcing Newline After Block -->
+{% block title %}{{ page_title }}{% endblock %}
+<!-- Enforcing Newline After Block -->
+{% block content %}
+<div class="login-auth-container">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-xl-4 col-lg-5 col-md-6 col-sm-8">
+        <div class="login-auth-card">
+          <div class="login-auth-header">
+            <div class="login-auth-icon">
+              <i class="fas fa-tint"></i>
+            </div>
+            <h2>Welcome Back</h2>
+            <p>Sign in to your BlueWave account</p>
+          </div>
+
+          <!-- Display Messages -->
+          {% if messages %} {% for message in messages %}
+          <div
+            class="alert alert-{{ message.tags }} alert-dismissible fade show login-alert"
+            role="alert"
+          >
+            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+          {% endfor %} {% endif %}
+
+          <!-- Login Form -->
+          <form method="post" class="login-auth-form" novalidate>
+            {% csrf_token %}
+
+            <!-- Email Field -->
+            <div class="login-form-group">
+              <label for="id_email" class="login-form-label">
+                <i class="fas fa-envelope"></i> Email Address
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="id_email"
+                class="login-form-control"
+                placeholder="Enter your email address"
+                value="{{ form.email.value|default:'' }}"
+                required
+              />
+              {% if form.email.errors %}
+              <div class="login-error-message">
+                {% for error in form.email.errors %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Password Field with Eye Toggle -->
+            <div class="login-form-group">
+              <label for="id_password" class="login-form-label">
+                <i class="fas fa-lock"></i> Password
+              </label>
+              <div class="login-password-wrapper">
+                <input
+                  type="password"
+                  name="password"
+                  id="id_password"
+                  class="login-form-control login-password-input"
+                  placeholder="Enter your password"
+                  required
+                />
+                <button
+                  type="button"
+                  class="login-password-toggle"
+                  onclick="togglePassword('id_password', this)"
+                >
+                  <i class="fas fa-eye"></i>
+                </button>
+              </div>
+              {% if form.password.errors %}
+              <div class="login-error-message">
+                {% for error in form.password.errors %}{{ error }}{% endfor %}
+              </div>
+              {% endif %}
+            </div>
+
+            <!-- Form errors -->
+            {% if form.non_field_errors %}
+            <div class="login-error-message mb-3">
+              <i class="fas fa-exclamation-triangle"></i>
+              {% for error in form.non_field_errors %}{{ error }}{% endfor %}
+            </div>
+            {% endif %}
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="login-form-options">
+              <div class="login-remember-me">
+                <input
+                  type="checkbox"
+                  name="remember_me"
+                  id="id_remember_me"
+                  class="login-form-check-input"
+                />
+                <label for="id_remember_me" class="login-remember-label">
+                  Remember me
+                </label>
+              </div>
+              <a href="#" class="login-forgot-link">Forgot password?</a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="login-auth-btn">
+              <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+          </form>
+
+          <div class="login-auth-footer">
+            <p>
+              Don't have an account?
+              <a href="{% url 'register_page' %}" class="login-auth-link"
+                >Create one now</a
+              >
+            </p>
+          </div>
+        </div>
+
+        <div class="login-auth-security">
+          <i class="fas fa-shield-alt"></i>
+          Protected by Django's built-in security
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* LOGIN PAGE SPECIFIC STYLES - ISOLATED WITH PREFIXES */
+
+  /* Auth Container - Scoped to login page only */
+  .login-auth-container {
+    min-height: calc(100vh - 120px) !important; /* Account for navbar height */
+    background: #ffffff !important;
+    display: flex !important;
+    align-items: center !important;
+    padding: 2rem 0 !important;
+    margin-top: 0 !important;
+  }
+
+  .login-auth-card {
+    background: white !important;
+    border-radius: 20px !important;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #e2e8f0 !important;
+    padding: 3rem !important;
+    margin: 1rem !important;
+    position: relative !important;
+    overflow: hidden !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  .login-auth-card::before {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 4px !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  }
+
+  .login-auth-header {
+    text-align: center !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .login-auth-icon {
+    width: 80px !important;
+    height: 80px !important;
+    margin: 0 auto 1rem !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    animation: loginPulse 2s infinite !important;
+  }
+
+  .login-auth-icon i {
+    font-size: 2rem !important;
+    color: white !important;
+  }
+
+  .login-auth-header h2 {
+    font-size: 2rem !important;
+    font-weight: 700 !important;
+    color: #2d3748 !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  .login-auth-header p {
+    color: #718096 !important;
+    font-size: 1rem !important;
+    margin-bottom: 0 !important;
+  }
+
+  .login-auth-form {
+    margin-bottom: 2rem !important;
+  }
+
+  .login-form-group {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .login-form-label {
+    display: block !important;
+    font-weight: 600 !important;
+    color: #2d3748 !important;
+    margin-bottom: 0.5rem !important;
+    font-size: 0.9rem !important;
+  }
+
+  .login-form-label i {
+    margin-right: 0.5rem !important;
+    color: #667eea !important;
+  }
+
+  /* Form Controls - Scoped to login page */
+  .login-form-control {
+    width: 100% !important;
+    padding: 0.875rem 1rem !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+    color: #495057 !important;
+    background-color: #fff !important;
+    background-clip: padding-box !important;
+    border: 2px solid #e2e8f0 !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease !important;
+    box-sizing: border-box !important;
+    display: block !important;
+    height: auto !important;
+    min-height: 48px !important;
+  }
+
+  .login-form-control:focus {
+    outline: none !important;
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+    background-color: #ffffff !important;
+  }
+
+  .login-form-control::placeholder {
+    color: #a0aec0 !important;
+    opacity: 1 !important;
+  }
+
+  .login-password-wrapper {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .login-password-input {
+    padding-right: 3rem !important;
+  }
+
+  .login-password-toggle {
+    position: absolute !important;
+    right: 1rem !important;
+    background: none !important;
+    border: none !important;
+    color: #718096 !important;
+    cursor: pointer !important;
+    padding: 0.5rem !important;
+    font-size: 1rem !important;
+    transition: color 0.3s ease !important;
+    z-index: 10 !important;
+  }
+
+  .login-password-toggle:hover {
+    color: #667eea !important;
+  }
+
+  .login-password-toggle:focus {
+    outline: none !important;
+  }
+
+  .login-password-toggle.active {
+    color: #667eea !important;
+  }
+
+  .login-form-options {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .login-remember-me {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .login-form-check-input {
+    margin-right: 0.5rem !important;
+    accent-color: #667eea !important;
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .login-remember-label {
+    font-size: 0.875rem !important;
+    color: #718096 !important;
+    margin-bottom: 0 !important;
+    cursor: pointer !important;
+  }
+
+  .login-forgot-link {
+    color: #667eea !important;
+    text-decoration: none !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    transition: color 0.3s ease !important;
+  }
+
+  .login-forgot-link:hover {
+    color: #764ba2 !important;
+  }
+
+  .login-auth-btn {
+    width: 100% !important;
+    padding: 1rem !important;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    transition: all 0.3s ease !important;
+    position: relative !important;
+    overflow: hidden !important;
+  }
+
+  .login-auth-btn:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3) !important;
+  }
+
+  .login-auth-btn:active {
+    transform: translateY(0) !important;
+  }
+
+  .login-auth-btn i {
+    margin-right: 0.5rem !important;
+  }
+
+  .login-auth-footer {
+    text-align: center !important;
+  }
+
+  .login-auth-footer p {
+    color: #718096 !important;
+    margin-bottom: 0 !important;
+  }
+
+  .login-auth-link {
+    color: #667eea !important;
+    text-decoration: none !important;
+    font-weight: 600 !important;
+    transition: color 0.3s ease !important;
+  }
+
+  .login-auth-link:hover {
+    color: #764ba2 !important;
+  }
+
+  .login-auth-security {
+    text-align: center !important;
+    margin-top: 1.5rem !important;
+    color: #718096 !important;
+    font-size: 0.875rem !important;
+  }
+
+  .login-auth-security i {
+    margin-right: 0.5rem !important;
+  }
+
+  .login-error-message {
+    color: #e53e3e !important;
+    font-size: 0.875rem !important;
+    margin-top: 0.5rem !important;
+    padding: 0.5rem !important;
+    background: #fed7d7 !important;
+    border: 1px solid #feb2b2 !important;
+    border-radius: 6px !important;
+  }
+
+  .login-error-message i {
+    margin-right: 0.5rem !important;
+  }
+
+  /* Login-specific alerts */
+  .login-alert {
+    border-radius: 12px !important;
+    border: none !important;
+    padding: 1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+
+  .login-alert.alert-success {
+    background: #c6f6d5 !important;
+    color: #22543d !important;
+  }
+
+  .login-alert.alert-danger {
+    background: #fed7d7 !important;
+    color: #742a2a !important;
+  }
+
+  .login-alert.alert-warning {
+    background: #fefcbf !important;
+    color: #744210 !important;
+  }
+
+  .login-alert.alert-info {
+    background: #bee3f8 !important;
+    color: #2a4365 !important;
+  }
+
+  /* Login-specific animation */
+  @keyframes loginPulse {
+    0% {
+      transform: scale(1) !important;
+    }
+    50% {
+      transform: scale(1.05) !important;
+    }
+    100% {
+      transform: scale(1) !important;
+    }
+  }
+
+  /* Mobile responsiveness for login page */
+  @media (max-width: 768px) {
+    .login-auth-card {
+      padding: 2rem 1.5rem !important;
+      margin: 0.5rem !important;
+    }
+
+    .login-auth-header h2 {
+      font-size: 1.75rem !important;
+    }
+
+    .login-form-options {
+      flex-direction: column !important;
+      gap: 1rem !important;
+      align-items: flex-start !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .login-auth-card {
+      padding: 1.5rem 1rem !important;
+    }
+
+    .login-auth-icon {
+      width: 60px !important;
+      height: 60px !important;
+    }
+
+    .login-auth-icon i {
+      font-size: 1.5rem !important;
+    }
+  }
+
+  /* Ensure login form inputs are always visible */
+  .login-form-control {
+    opacity: 1 !important;
+    visibility: visible !important;
+  }
+
+  /* Prevent any navbar interference */
+  .login-auth-container * {
+    box-sizing: border-box !important;
+  }
+
+  /* Override any potential Bootstrap conflicts for login page */
+  .login-auth-container .container {
+    max-width: 1200px !important;
+  }
+
+  .login-auth-container .row {
+    margin: 0 !important;
+  }
+
+  .login-auth-container .col-xl-4,
+  .login-auth-container .col-lg-5,
+  .login-auth-container .col-md-6,
+  .login-auth-container .col-sm-8 {
+    padding: 0 15px !important;
+  }
+</style>
+
+<script>
+  function togglePassword(inputId, toggleButton) {
+    const passwordInput = document.getElementById(inputId);
+    const icon = toggleButton.querySelector("i");
+
+    if (passwordInput.type === "password") {
+      passwordInput.type = "text";
+      icon.classList.remove("fa-eye");
+      icon.classList.add("fa-eye-slash");
+      toggleButton.classList.add("active");
+    } else {
+      passwordInput.type = "password";
+      icon.classList.remove("fa-eye-slash");
+      icon.classList.add("fa-eye");
+      toggleButton.classList.remove("active");
+    }
+  }
+
+  // Ensure login page doesn't interfere with navbar
+  document.addEventListener("DOMContentLoaded", function () {
+    // Remove any potential navbar class conflicts
+    document.body.classList.remove("navbar-conflict");
+
+    // Ensure proper spacing from navbar
+    const authContainer = document.querySelector(".login-auth-container");
+    if (authContainer) {
+      authContainer.style.paddingTop = "2rem";
+    }
+  });
+</script>
+{% endblock %}
