@@ -1,0 +1,88 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+*.sqlite3-journal
+*.mo
+local_settings.py
+db.sqlite3
+
+# If using Django migrations:
+*/migrations/__pycache__/
+*/migrations/*.pyc
+*/migrations/*.pyo
+*/migrations/*.pot
+
+# Media and static files
+/media/
+/staticfiles/
+/static/
+
+# Virtual environment
+venv/
+ENV/
+env/
+.venv/
+
+# IDEs & editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Testing & coverage
+.coverage
+.tox/
+.nox/
+htmlcov/
+*.cover
+*.coverage.*
+.cache
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.prof
+
+# Pipenv
+Pipfile.lock
+
+# Poetry
+poetry.lock
+
+# Environments
+.env
+*.env
+.env.*
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# Pytype
+.pytype/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# VS Code
+.vscode/
