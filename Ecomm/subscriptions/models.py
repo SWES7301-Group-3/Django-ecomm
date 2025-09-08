@@ -3,7 +3,6 @@ from django.conf import settings
 
 class SubscriptionPlan(models.Model):
     """
-    API subscription plan model.
     Reusable subscription plan that can be later linked to a payment provider (stripe_plan_id).
     """
     name = models.CharField(max_length=120)

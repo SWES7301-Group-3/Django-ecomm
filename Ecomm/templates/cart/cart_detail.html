@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+<!-- Enforcing Newline After Block -->
+
+{% block title %} Shopping Cart {% endblock %}
+<!-- Enforcing Newline After Block -->
+
+{% block content %}
+<h2>Your Shopping Cart</h2>
+<!-- Enforcing Newline After Block -->
+
+{% if cart_items %}
+<!-- Enforcing Newline After Block -->
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Product</th>
+      <th>Unit Price</th>
+      <th>Quantity</th>
+      <th>Subtotal</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in cart_items %}
+    <!-- Enforcing Newline After Block -->
+    <tr>
+      <td>{{ item.product.name }}</td>
+      <td>${{ item.unit_price|floatformat:2 }}</td>
+      <td>
+        <form method="post" action="{% url 'cart:update_cart_item' item.id %}">
+          {% csrf_token %}
+          <input
+            type="number"
+            name="quantity"
+            value="{{ item.quantity }}"
+            min="1"
+            style="width: 60px"
+          />
+          <button type="submit" class="btn btn-sm btn-primary">Update</button>
+        </form>
+      </td>
+      <td>${{ item.line_total|floatformat:2 }}</td>
+      <td>
+        <form method="post" action="{% url 'cart:remove_from_cart' item.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+        </form>
+      </td>
+    </tr>
+    <!-- Enforcing Newline After Block -->
+    {% endfor %}
+    <!-- Enforcing Newline After Block -->
+    <tr>
+      <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+      <td colspan="2"><strong>${{ subtotal|floatformat:2 }}</strong></td>
+    </tr>
+    <tr>
+      <td colspan="3" class="text-end"><strong>Shipping:</strong></td>
+      <td colspan="2"><strong>${{ shipping|floatformat:2 }}</strong></td>
+    </tr>
+    <tr>
+      <td colspan="3" class="text-end"><strong>Total:</strong></td>
+      <td colspan="2"><strong>${{ total|floatformat:2 }}</strong></td>
+    </tr>
+  </tbody>
+</table>
+<!-- Enforcing Newline After Block -->
+
+<div class="d-flex gap-2">
+  <form method="post" action="{% url 'cart:clear_cart' %}">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-warning">Clear Cart</button>
+  </form>
+  <a href="{% url 'cart:checkout' %}" class="btn btn-success"
+    >Proceed to Checkout</a
+  >
+</div>
+<!-- Enforcing Newline After Block -->
+
+{% else %}
+<!-- Enforcing Newline After Block -->
+<p>Your cart is empty.</p>
+<a href="{% url 'products:product_list' %}" class="btn btn-primary"
+  >Continue Shopping</a
+>
+<!-- Enforcing Newline After Block -->
+{% endif %}
+<!-- Enforcing Newline After Block -->
+{% endblock %}
+<!-- Enforcing Newline After Block -->
