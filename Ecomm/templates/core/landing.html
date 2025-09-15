@@ -25,8 +25,11 @@
           <a href="#products" class="btn btn-light btn-lg">
             <i class="fas fa-tint me-2"></i>Shop Desalination Units
           </a>
-          <a href="#services" class="btn btn-outline-light btn-lg">
-            <i class="fas fa-database me-2"></i>Data Subscriptions
+          <a
+            href="{% url 'subscriptions:subscription_plans' %}"
+            class="btn btn-info btn-lg"
+          >
+            <i class="fas fa-database me-2"></i>Buy Subscription Plans
           </a>
         </div>
       </div>

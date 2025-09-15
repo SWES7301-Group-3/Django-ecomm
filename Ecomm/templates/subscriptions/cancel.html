@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+<!-- Enforcing New Line  -->
+{% load static %}
+<!-- Enforcing New Line  -->
+{% block title %}{{ page_title }}{% endblock %}
+<!-- Enforcing New Line  -->
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header bg-danger text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-exclamation-triangle me-2"></i>Cancel Subscription
+          </h4>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-warning">
+            <strong>Are you sure you want to cancel your subscription?</strong>
+            <br />This action cannot be undone.
+          </div>
+
+          <div class="mb-3">
+            <h6>Subscription Details:</h6>
+            <ul>
+              <li><strong>Plan:</strong> {{ subscription.plan.name }}</li>
+              <li>
+                <strong>End Date:</strong> {{ subscription.end_date|date:"M d,
+                Y" }}
+              </li>
+              <li>
+                <strong>Days Remaining:</strong> {{ subscription.days_remaining
+                }}
+              </li>
+            </ul>
+          </div>
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="reason" class="form-label"
+                >Reason for cancellation (optional):</label
+              >
+              <textarea
+                class="form-control"
+                id="reason"
+                name="reason"
+                rows="3"
+                placeholder="Help us improve by letting us know why you're cancelling..."
+              ></textarea>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <a
+                href="{% url 'subscriptions:my_subscriptions' %}"
+                class="btn btn-secondary"
+              >
+                <i class="fas fa-arrow-left me-2"></i>Keep Subscription
+              </a>
+              <button type="submit" class="btn btn-danger">
+                <i class="fas fa-times me-2"></i>Cancel Subscription
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

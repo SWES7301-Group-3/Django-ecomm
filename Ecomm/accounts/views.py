@@ -4,6 +4,11 @@ from django.contrib import messages
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth import get_user_model
 from django.utils import timezone
+from .models import UserOTP
+from django.conf import settings
+from django.core.mail import send_mail
+import random
+
 
 User = get_user_model()
 
@@ -176,16 +181,44 @@ def register_page(request):
         
         # If no validation errors, create user
         if not form_errors:
-            user = User.objects.create_user(
-                username=username,
-                email=email,
-                password=password,
-                first_name=first_name,
-                last_name=last_name
-            )
-            
-            messages.success(request, "Registration successful! Please log in.")
-            return redirect("login_page")
+            try:
+                user = User.objects.create_user(
+                    username=username,
+                    email=email,
+                    password=password,
+                    first_name=first_name,
+                    last_name=last_name,
+                    is_active=False  # User inactive until OTP verified
+                )
+                
+                # Generate OTP
+                otp_code = f"{random.randint(100000, 999999)}"
+                expires_at = timezone.now() + timezone.timedelta(minutes=10)
+                UserOTP.objects.create(user=user, otp_code=otp_code, expires_at=expires_at)
+
+                # Send OTP via email
+                send_mail(
+                    "Your OTP Code",
+                    f"Your OTP code for BlueWave Solutions is: {otp_code}. It will expire in 10 minutes.",
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+
+                request.session['pending_user_id'] = user.id
+                messages.info(request, "Registration successful! Please check your email for the OTP code to verify your account.")
+                return redirect("otp_verify_page")
+                
+            except Exception as e:
+                # Handle any errors during user creation or email sending
+                print(f"Registration error: {e}")
+                form_errors['__all__'] = ['An error occurred during registration. Please try again.']
+                # If user was created but email failed, we should clean up
+                try:
+                    if 'user' in locals():
+                        user.delete()
+                except:
+                    pass
     
     context = {
         'form_data': form_data,
@@ -193,6 +226,56 @@ def register_page(request):
         'page_title': 'Create Account - BlueWave Solutions'
     }
     return render(request, "accounts/register.html", context)
+
+def otp_verify_page(request):
+    user_id = request.session.get('pending_user_id')
+    if not user_id:
+        return redirect('register_page')
+    user = User.objects.get(id=user_id)
+    form_errors = []
+    
+    # Handle resend OTP
+    if request.method == "POST" and "resend_otp" in request.POST:
+        # Generate new OTP
+        otp_code = f"{random.randint(100000, 999999)}"
+        expires_at = timezone.now() + timezone.timedelta(minutes=10)
+        # Update or create OTP
+        UserOTP.objects.update_or_create(user=user, defaults={
+            'otp_code': otp_code,
+            'expires_at': expires_at
+        })
+        # Send OTP via email again
+        send_mail(
+            "Your OTP Code",
+            f"Your OTP code for BlueWave Solutions is: {otp_code}. It will expire in 10 minutes.",
+            settings.DEFAULT_FROM_EMAIL,
+            [user.email],
+            fail_silently=False,
+        )
+        messages.info(request, "A new OTP code has been sent to your email.")
+    
+    if request.method == "POST" and "verify_otp" in request.POST:
+        otp_input = request.POST.get('otp_code', '').strip()
+        try:
+            user_otp = UserOTP.objects.get(user=user)
+            if user_otp.is_expired():
+                form_errors.append("OTP code has expired. Please resend OTP.")
+            elif user_otp.otp_code == otp_input:
+                user.is_active = True
+                user.save()
+                user_otp.delete()
+                messages.success(request, "Your account has been verified! Please log in.")
+                return redirect("login_page")
+            else:
+                form_errors.append("Invalid OTP code.")
+        except UserOTP.DoesNotExist:
+            form_errors.append("No OTP found for this user. Please register again.")
+
+    context = {
+        "form_errors": form_errors,
+        "page_title": "Verify Account"
+    }
+    return render(request, "accounts/otp_verify.html", context)
 
 @login_required
 def logout_view(request):

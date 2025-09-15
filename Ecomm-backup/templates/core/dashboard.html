@@ -1,0 +1,332 @@
+{% extends "base.html" %}
+<!-- Enforcing Newline After Block -->
+
+{% load static %}
+<!-- Enforcing Newline After Block -->
+{% block title %}{{ page_title }}{% endblock %}
+<!-- Enforcing Newline After Block -->
+{% block content %}
+<div class="container-fluid py-4">
+  <!-- Welcome Header -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card bg-primary text-white mb-4">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <h1 class="h3 mb-1">
+                Welcome back, {{ user.get_full_name|default:user.username }}!
+              </h1>
+              <p class="mb-0 opacity-75">
+                <i class="fas fa-calendar-alt me-2"></i>
+                {{ current_time|date:"l, F j, Y g:i A" }}
+              </p>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-tachometer-alt fa-3x opacity-75"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <div
+                class="text-xs font-weight-bold text-primary text-uppercase mb-1"
+              >
+                Total Orders
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                {{ user_stats.total_orders }}
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-shopping-cart fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <div
+                class="text-xs font-weight-bold text-success text-uppercase mb-1"
+              >
+                Active Subscriptions
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                {{ user_stats.active_subscriptions_count }}
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-database fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <div
+                class="text-xs font-weight-bold text-info text-uppercase mb-1"
+              >
+                Total Spent
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                ${{ user_stats.total_spent|floatformat:2 }}
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <div class="row align-items-center">
+            <div class="col">
+              <div
+                class="text-xs font-weight-bold text-warning text-uppercase mb-1"
+              >
+                Account Age
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                {{ user_stats.account_age_days }} days
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-user-clock fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="row">
+    <div class="col-lg-8">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-bolt me-2"></i>Quick Actions
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <a
+                href="{% url 'profile_page' %}"
+                class="btn btn-outline-primary w-100 p-3"
+              >
+                <i class="fas fa-user me-2"></i>
+                <div>
+                  <strong>My Profile</strong>
+                  <small class="d-block text-muted"
+                    >View and edit your profile</small
+                  >
+                </div>
+              </a>
+            </div>
+
+            {% if user.is_staff %}
+            <div class="col-md-6">
+              <a href="/admin/" class="btn btn-outline-success w-100 p-3">
+                <i class="fas fa-tools me-2"></i>
+                <div>
+                  <strong>Admin Panel</strong>
+                  <small class="d-block text-muted"
+                    >Manage system settings</small
+                  >
+                </div>
+              </a>
+            </div>
+            {% endif %}
+
+            <div class="col-md-6">
+              <a
+                href="{% url 'core:about' %}"
+                class="btn btn-outline-info w-100 p-3"
+              >
+                <i class="fas fa-info-circle me-2"></i>
+                <div>
+                  <strong>About Us</strong>
+                  <small class="d-block text-muted"
+                    >Learn more about BlueWave</small
+                  >
+                </div>
+              </a>
+            </div>
+
+            <div class="col-md-6">
+              <a
+                href="{% url 'logout_view' %}"
+                class="btn btn-outline-danger w-100 p-3"
+              >
+                <i class="fas fa-sign-out-alt me-2"></i>
+                <div>
+                  <strong>Logout</strong>
+                  <small class="d-block text-muted"
+                    >Sign out of your account</small
+                  >
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-user me-2"></i>Account Info
+          </h6>
+        </div>
+        <div class="card-body text-center">
+          <div class="avatar mb-3">
+            <i class="fas fa-user-circle fa-4x text-gray-400"></i>
+          </div>
+          <h5 class="mb-1">{{ user.get_full_name|default:user.username }}</h5>
+          <p class="text-muted mb-3">{{ user.email }}</p>
+
+          <div class="text-start">
+            <small class="text-muted d-block">
+              <i class="fas fa-calendar me-2"></i>
+              Joined: {{ user.date_joined|date:"M d, Y" }}
+            </small>
+            {% if user.last_login %}
+            <small class="text-muted d-block">
+              <i class="fas fa-clock me-2"></i>
+              Last login: {{ user.last_login|date:"M d, Y g:i A" }}
+            </small>
+            {% endif %}
+
+            <div class="mt-3">
+              {% if user.is_superuser %}
+              <span class="badge bg-danger">Superuser</span>
+              {% endif %} {% if user.is_staff %}
+              <span class="badge bg-success">Staff</span>
+              {% endif %} {% if user.is_active %}
+              <span class="badge bg-primary">Active</span>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Activity -->
+  {% if recent_activity %}
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h6 class="m-0 font-weight-bold text-primary">
+            <i class="fas fa-history me-2"></i>Recent Activity
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="timeline">
+            {% for activity in recent_activity %}
+            <div class="timeline-item d-flex align-items-center mb-3">
+              <div class="timeline-icon me-3">
+                <i class="{{ activity.icon }} text-{{ activity.color }}"></i>
+              </div>
+              <div class="timeline-content">
+                <h6 class="mb-1">{{ activity.action }}</h6>
+                <small class="text-muted"
+                  >{{ activity.timestamp|date:"M d, Y g:i A" }}</small
+                >
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- Environmental Impact -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card border-0 shadow-sm bg-light">
+        <div class="card-header bg-success text-white py-3">
+          <h6 class="m-0 font-weight-bold">
+            <i class="fas fa-leaf me-2"></i>Your Environmental Impact
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-md-3">
+              <div class="border-end">
+                <h4 class="text-primary">
+                  {{ user_environmental_impact.gallons_processed|floatformat:0
+                  }}
+                </h4>
+                <small class="text-muted">Gallons Processed</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="border-end">
+                <h4 class="text-success">
+                  {{ user_environmental_impact.co2_saved }}
+                </h4>
+                <small class="text-muted">kg CO₂ Saved</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="border-end">
+                <h4 class="text-info">
+                  {{ user_environmental_impact.trees_equivalent }}
+                </h4>
+                <small class="text-muted">Trees Equivalent</small>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <h4 class="text-warning">
+                {{ user_environmental_impact.energy_generated }}
+              </h4>
+              <small class="text-muted">kWh Generated</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .timeline-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+{% endblock %}

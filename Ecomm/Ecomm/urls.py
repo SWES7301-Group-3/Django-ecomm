@@ -5,7 +5,12 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    
+
+    # 2FA
+    #path("account/", include("two_factor.urls")),  # 2FA routes
+    #path("2fa/", include("two_factor.urls")),  # Include the 2FA URLs
+
+
     # Core app (main pages)
     path("", include("core.urls")),
     

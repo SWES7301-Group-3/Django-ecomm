@@ -83,6 +83,23 @@ def dashboard_view(request):
         user=user, 
         status='active'  # Changed from active=True to status='active'
     ).select_related('plan').order_by('-start_date')
+
+
+    # Generate API tokens for dashboard display
+    api_access_info = {}
+    if active_subscriptions.exists():
+        for subscription in active_subscriptions:
+            try:
+                from subscriptions.jwt_service import JWTSubscriptionService
+                token = JWTSubscriptionService.generate_subscription_token(user, subscription)
+                api_access_info[subscription.id] = {
+                    'token': token,
+                    'plan_name': subscription.plan.name,
+                    'rate_limit': subscription.plan.api_rate_limit,
+                    'days_remaining': subscription.days_remaining
+                }
+            except Exception:
+                pass
     
     # Get cart items count
     cart_count = 0
@@ -146,6 +163,7 @@ def dashboard_view(request):
     
     context = {
         'recent_orders': recent_orders,
+        'api_access_info': api_access_info,
         'active_subscriptions': active_subscriptions,
         'cart_count': cart_count,
         'user_stats': user_stats,

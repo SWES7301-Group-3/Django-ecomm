@@ -1,0 +1,35 @@
+{% extends "base.html" %} {% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Verify Your Account</h2>
+  <form method="post" class="mb-3">
+    {% csrf_token %}
+    <input type="hidden" name="verify_otp" value="1" />
+    <div class="mb-3">
+      <label for="otp_code" class="form-label"
+        >Enter OTP code sent to your email:</label
+      >
+      <input
+        type="text"
+        name="otp_code"
+        id="otp_code"
+        maxlength="6"
+        class="form-control"
+        required
+      />
+    </div>
+    {% if form_errors %}
+    <div class="alert alert-danger">
+      {% for error in form_errors %}
+      <div>{{ error }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <button type="submit" class="btn btn-primary">Verify Account</button>
+  </form>
+  <form method="post">
+    {% csrf_token %}
+    <input type="hidden" name="resend_otp" value="1" />
+    <button type="submit" class="btn btn-link">Resend OTP</button>
+  </form>
+</div>
+{% endblock %}

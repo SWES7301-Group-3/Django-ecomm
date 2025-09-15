@@ -1,0 +1,532 @@
+{% extends "admin/base.html" %}
+<!-- Enforcing Newline After Block -->
+
+{% load static %}
+<!-- Enforcing Newline After Block -->
+{% block title %}{{ page_title }}{% endblock %}
+<!-- Enforcing Newline After Block -->
+{% block content %}
+<div class="container-fluid mt-4">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h2 class="mb-1">
+                <i class="fas fa-upload me-2"></i>{{ page_title }}
+              </h2>
+              <p class="mb-0">Add new products to your catalog</p>
+            </div>
+            <div>
+              <a
+                href="{% url 'products:admin_product_list' %}"
+                class="btn btn-light"
+              >
+                <i class="fas fa-list me-2"></i>View Products
+              </a>
+              <a
+                href="{% url 'products:admin_bulk_upload' %}"
+                class="btn btn-outline-light ms-2"
+              >
+                <i class="fas fa-file-csv me-2"></i>Bulk Upload
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <!-- Upload Form -->
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h5 class="mb-0">
+            <i class="fas fa-plus-circle me-2"></i>Product Information
+          </h5>
+        </div>
+        <div class="card-body">
+          <form method="post" enctype="multipart/form-data" id="product-form">
+            {% csrf_token %}
+
+            <!-- Basic Information -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="fw-bold text-primary mb-3">
+                  <i class="fas fa-info-circle me-2"></i>Basic Information
+                </h6>
+              </div>
+
+              <div class="col-md-8 mb-3">
+                <label for="{{ form.name.id_for_label }}" class="form-label"
+                  >Product Name *</label
+                >
+                {{ form.name }} {% if form.name.errors %}
+                <div class="text-danger small">{{ form.name.errors }}</div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label
+                  for="{{ form.product_category.id_for_label }}"
+                  class="form-label"
+                  >Category *</label
+                >
+                {{ form.product_category }} {% if form.product_category.errors
+                %}
+                <div class="text-danger small">
+                  {{ form.product_category.errors }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-12 mb-3">
+                <label
+                  for="{{ form.description.id_for_label }}"
+                  class="form-label"
+                  >Description *</label
+                >
+                {{ form.description }} {% if form.description.errors %}
+                <div class="text-danger small">
+                  {{ form.description.errors }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label for="{{ form.price.id_for_label }}" class="form-label"
+                  >Price ($) *</label
+                >
+                {{ form.price }} {% if form.price.errors %}
+                <div class="text-danger small">{{ form.price.errors }}</div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label
+                  for="{{ form.product_type.id_for_label }}"
+                  class="form-label"
+                  >Product Type</label
+                >
+                {{ form.product_type }} {% if form.product_type.errors %}
+                <div class="text-danger small">
+                  {{ form.product_type.errors }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-4 mb-3">
+                <label
+                  for="{{ form.stock_quantity.id_for_label }}"
+                  class="form-label"
+                  >Stock Quantity</label
+                >
+                {{ form.stock_quantity }} {% if form.stock_quantity.errors %}
+                <div class="text-danger small">
+                  {{ form.stock_quantity.errors }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Technical Specifications -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="fw-bold text-success mb-3">
+                  <i class="fas fa-cogs me-2"></i>Technical Specifications
+                </h6>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ form.capacity_gallons_per_day.id_for_label }}"
+                  class="form-label"
+                  >Capacity (gallons/day)</label
+                >
+                {{ form.capacity_gallons_per_day }} {% if
+                form.capacity_gallons_per_day.errors %}
+                <div class="text-danger small">
+                  {{ form.capacity_gallons_per_day.errors }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ form.power_consumption_watts.id_for_label }}"
+                  class="form-label"
+                  >Power Consumption (watts)</label
+                >
+                {{ form.power_consumption_watts }} {% if
+                form.power_consumption_watts.errors %}
+                <div class="text-danger small">
+                  {{ form.power_consumption_watts.errors }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ form.dimensions.id_for_label }}"
+                  class="form-label"
+                  >Dimensions</label
+                >
+                {{ form.dimensions }} {% if form.dimensions.errors %}
+                <div class="text-danger small">
+                  {{ form.dimensions.errors }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ form.weight_pounds.id_for_label }}"
+                  class="form-label"
+                  >Weight (pounds)</label
+                >
+                {{ form.weight_pounds }} {% if form.weight_pounds.errors %}
+                <div class="text-danger small">
+                  {{ form.weight_pounds.errors }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Environmental Impact -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="fw-bold text-warning mb-3">
+                  <i class="fas fa-leaf me-2"></i>Environmental Impact
+                </h6>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ form.co2_savings_per_year.id_for_label }}"
+                  class="form-label"
+                  >CO2 Savings/Year (kg)</label
+                >
+                {{ form.co2_savings_per_year }} {% if
+                form.co2_savings_per_year.errors %}
+                <div class="text-danger small">
+                  {{ form.co2_savings_per_year.errors }}
+                </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ form.energy_source.id_for_label }}"
+                  class="form-label"
+                  >Energy Source</label
+                >
+                {{ form.energy_source }} {% if form.energy_source.errors %}
+                <div class="text-danger small">
+                  {{ form.energy_source.errors }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Images -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="fw-bold text-info mb-3">
+                  <i class="fas fa-images me-2"></i>Product Images
+                </h6>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label for="{{ form.image.id_for_label }}" class="form-label"
+                  >Main Product Image</label
+                >
+                {{ form.image }} {% if form.image.errors %}
+                <div class="text-danger small">{{ form.image.errors }}</div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ image_form.images.id_for_label }}"
+                  class="form-label"
+                  >Additional Images</label
+                >
+                <input
+                  type="file"
+                  name="images"
+                  class="form-control"
+                  multiple
+                  accept="image/*"
+                />
+                <div class="form-text">
+                  Hold Ctrl/Cmd to select multiple files (JPG, PNG, WebP)
+                </div>
+                {% if image_form.images.errors %}
+                <div class="text-danger small">
+                  {{ image_form.images.errors }}
+                </div>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Status Settings -->
+            <div class="row mb-4">
+              <div class="col-12">
+                <h6 class="fw-bold text-secondary mb-3">
+                  <i class="fas fa-toggle-on me-2"></i>Status & Settings
+                </h6>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div class="form-check">
+                  {{ form.is_active }}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.is_active.id_for_label }}"
+                  >
+                    Product is Active
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <div class="form-check">
+                  {{ form.is_featured }}
+                  <label
+                    class="form-check-label"
+                    for="{{ form.is_featured.id_for_label }}"
+                  >
+                    Featured Product
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Submit Buttons -->
+            <div class="row">
+              <div class="col-12">
+                <div class="d-flex justify-content-between">
+                  <a
+                    href="{% url 'products:admin_product_list' %}"
+                    class="btn btn-outline-secondary"
+                  >
+                    <i class="fas fa-arrow-left me-2"></i>Cancel
+                  </a>
+                  <div>
+                    <button
+                      type="submit"
+                      name="add_another"
+                      class="btn btn-outline-primary me-2"
+                    >
+                      <i class="fas fa-plus me-2"></i>Save & Add Another
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                      <i class="fas fa-save me-2"></i>Save Product
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <!-- Quick Stats -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-header">
+          <h6 class="mb-0">
+            <i class="fas fa-chart-bar me-2"></i>Quick Actions
+          </h6>
+        </div>
+        <div class="card-body">
+          <div class="d-grid gap-2">
+            <a
+              href="{% url 'products:admin_bulk_upload' %}"
+              class="btn btn-outline-primary btn-sm"
+            >
+              <i class="fas fa-file-csv me-2"></i>Bulk Upload CSV
+            </a>
+            <a
+              href="{% url 'products:admin_category_management' %}"
+              class="btn btn-outline-secondary btn-sm"
+            >
+              <i class="fas fa-tags me-2"></i>Manage Categories
+            </a>
+            <a
+              href="{% url 'products:download_csv_template' %}"
+              class="btn btn-outline-info btn-sm"
+            >
+              <i class="fas fa-download me-2"></i>Download CSV Template
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Products -->
+      {% if recent_products %}
+      <div class="card shadow-sm">
+        <div class="card-header">
+          <h6 class="mb-0"><i class="fas fa-clock me-2"></i>Recently Added</h6>
+        </div>
+        <div class="card-body">
+          {% for product in recent_products %}
+          <div class="d-flex align-items-center mb-2 pb-2 border-bottom">
+            {% if product.image %}
+            <img
+              src="{{ product.image.url }}"
+              alt="{{ product.name }}"
+              class="rounded me-2"
+              style="width: 40px; height: 40px; object-fit: cover"
+            />
+            {% else %}
+            <div
+              class="bg-light rounded me-2 d-flex align-items-center justify-content-center"
+              style="width: 40px; height: 40px"
+            >
+              <i class="fas fa-image text-muted"></i>
+            </div>
+            {% endif %}
+            <div class="flex-grow-1">
+              <div class="fw-semibold small">{{ product.name }}</div>
+              <div class="text-muted small">${{ product.price }}</div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+  .card {
+    border: none;
+    border-radius: 10px;
+  }
+
+  .card-header {
+    border-radius: 10px 10px 0 0 !important;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  }
+
+  .btn {
+    border-radius: 6px;
+  }
+
+  @media (max-width: 768px) {
+    .container-fluid {
+      padding-left: 15px;
+      padding-right: 15px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Form validation feedback
+    const form = document.getElementById("product-form");
+    form.addEventListener("submit", function (e) {
+      const requiredFields = form.querySelectorAll(
+        "input[required], select[required], textarea[required]"
+      );
+      let isValid = true;
+
+      requiredFields.forEach((field) => {
+        if (!field.value.trim()) {
+          field.classList.add("is-invalid");
+          isValid = false;
+        } else {
+          field.classList.remove("is-invalid");
+          field.classList.add("is-valid");
+        }
+      });
+
+      if (!isValid) {
+        e.preventDefault();
+        alert("Please fill in all required fields.");
+      }
+    });
+
+    // File upload preview for main image
+    const imageInput = document.getElementById("{{ form.image.id_for_label }}");
+    if (imageInput) {
+      imageInput.addEventListener("change", function (e) {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            // Create or update preview
+            let preview = document.getElementById("main-image-preview");
+            if (!preview) {
+              preview = document.createElement("img");
+              preview.id = "main-image-preview";
+              preview.className = "mt-2 rounded";
+              preview.style.maxWidth = "200px";
+              preview.style.height = "auto";
+              imageInput.parentNode.appendChild(preview);
+            }
+            preview.src = e.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+    }
+
+    // Multiple images preview
+    const multipleImageInput = document.querySelector('input[name="images"]');
+    if (multipleImageInput) {
+      multipleImageInput.addEventListener("change", function (e) {
+        const files = e.target.files;
+        let previewContainer = document.getElementById(
+          "multiple-images-preview"
+        );
+
+        if (!previewContainer) {
+          previewContainer = document.createElement("div");
+          previewContainer.id = "multiple-images-preview";
+          previewContainer.className = "mt-2 d-flex flex-wrap gap-2";
+          multipleImageInput.parentNode.appendChild(previewContainer);
+        }
+
+        previewContainer.innerHTML = "";
+
+        for (let i = 0; i < files.length && i < 5; i++) {
+          const file = files[i];
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = document.createElement("img");
+            img.src = e.target.result;
+            img.className = "rounded";
+            img.style.width = "80px";
+            img.style.height = "80px";
+            img.style.objectFit = "cover";
+            previewContainer.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        }
+
+        if (files.length > 5) {
+          const moreText = document.createElement("div");
+          moreText.className = "text-muted small";
+          moreText.textContent = `+${files.length - 5} more`;
+          previewContainer.appendChild(moreText);
+        }
+      });
+    }
+  });
+</script>
+{% endblock %}
