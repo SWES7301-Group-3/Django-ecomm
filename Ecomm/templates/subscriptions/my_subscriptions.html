@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+<!-- Enforcing Newline After Block -->
+{% load static %}
+<!-- Enforcing Newline After Block -->
+{% block title %}{{ page_title }}{% endblock %}
+<!-- Enforcing Newline After Block -->
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4"><i class="fas fa-database me-2"></i>My Subscriptions</h1>
+
+      {% if not subscription_data %}
+      <div class="text-center py-5">
+        <i class="fas fa-database fa-4x text-muted mb-3"></i>
+        <h3>No Subscriptions Yet</h3>
+        <p class="text-muted">
+          Subscribe to a plan to access our environmental data API
+        </p>
+        <a
+          href="{% url 'subscriptions:subscription_plans' %}"
+          class="btn btn-primary btn-lg"
+        >
+          <i class="fas fa-plus me-2"></i>Browse Plans
+        </a>
+      </div>
+      {% else %}
+
+      <!-- Subscriptions List -->
+      <div class="row">
+        {% for item in subscription_data %}
+        <div class="col-lg-6 mb-4">
+          <div
+            class="card {% if item.subscription.is_valid %}border-success{% elif item.subscription.status == 'expired' %}border-warning{% else %}border-secondary{% endif %}"
+          >
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h5 class="mb-0">{{ item.subscription.plan.name }}</h5>
+              <span
+                class="badge {% if item.subscription.is_valid %}bg-success{% elif item.subscription.status == 'expired' %}bg-warning{% else %}bg-secondary{% endif %}"
+              >
+                {% if item.subscription.is_valid %}Active{% else %}{{
+                item.subscription.get_status_display }}{% endif %}
+              </span>
+            </div>
+            <div class="card-body">
+              <div class="row mb-3">
+                <div class="col-6">
+                  <small class="text-muted">Plan Type</small>
+                  <div class="fw-bold">
+                    {{ item.subscription.plan.get_plan_type_display }}
+                  </div>
+                </div>
+                <div class="col-6">
+                  <small class="text-muted">Price</small>
+                  <div class="fw-bold">${{ item.subscription.plan.price }}</div>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-6">
+                  <small class="text-muted">Start Date</small>
+                  <div>{{ item.subscription.start_date|date:"M d, Y" }}</div>
+                </div>
+                <div class="col-6">
+                  <small class="text-muted">End Date</small>
+                  <div>{{ item.subscription.end_date|date:"M d, Y" }}</div>
+                </div>
+              </div>
+
+              {% if item.subscription.is_valid %}
+              <div class="mb-3">
+                <small class="text-muted">Days Remaining</small>
+                <div class="progress" style="height: 8px">
+                  <div
+                    class="progress-bar bg-success"
+                    style="width: {{ item.progress_percentage }}%"
+                  ></div>
+                </div>
+                <small
+                  >{{ item.subscription.days_remaining }} days left ({{
+                  item.progress_percentage|floatformat:0 }}% used)</small
+                >
+              </div>
+
+              <!-- API Token Section -->
+              {% if item.api_token %}
+              <div class="alert alert-info">
+                <h6><i class="fas fa-key me-2"></i>API Token</h6>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control font-monospace"
+                    value="{{ item.api_token }}"
+                    readonly
+                    id="token-{{ item.subscription.id }}"
+                  />
+                  <button
+                    class="btn btn-outline-secondary"
+                    type="button"
+                    onclick="copyToken('token-{{ item.subscription.id }}')"
+                  >
+                    <i class="fas fa-copy"></i>
+                  </button>
+                </div>
+                <small class="text-muted"
+                  >Use this token in your API requests</small
+                >
+              </div>
+              {% endif %}
+
+              <div class="d-flex gap-2">
+                <button
+                  class="btn btn-primary btn-sm"
+                  data-bs-toggle="modal"
+                  data-bs-target="#apiModal-{{ item.subscription.id }}"
+                >
+                  <i class="fas fa-code me-1"></i>API Docs
+                </button>
+                {% if item.subscription.auto_renew %}
+                <span class="badge bg-info">Auto-renew On</span>
+                {% endif %}
+                <a
+                  href="{% url 'subscriptions:cancel_subscription' item.subscription.id %}"
+                  class="btn btn-outline-danger btn-sm ms-auto"
+                >
+                  Cancel
+                </a>
+              </div>
+              {% else %}
+              <p class="text-muted">This subscription is no longer active.</p>
+              <a
+                href="{% url 'subscriptions:subscription_plans' %}"
+                class="btn btn-primary"
+              >
+                Subscribe Again
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+
+        <!-- API Usage Modal -->
+        <div
+          class="modal fade"
+          id="apiModal-{{ item.subscription.id }}"
+          tabindex="-1"
+        >
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">
+                  API Usage - {{ item.subscription.plan.name }}
+                </h5>
+                <button
+                  type="button"
+                  class="btn-close"
+                  data-bs-dismiss="modal"
+                ></button>
+              </div>
+              <div class="modal-body">
+                <h6>Authentication</h6>
+                <pre><code>Authorization: Bearer {{ item.api_token }}</code></pre>
+
+                <h6 class="mt-3">Example API Call</h6>
+                <pre><code>curl -X GET "http://localhost:5000/api/v1/buoys" \
+  -H "Authorization: Bearer {{ item.api_token }}" \
+  -H "Content-Type: application/json"</code></pre>
+
+                <h6 class="mt-3">Rate Limits</h6>
+                <p>
+                  {{ item.subscription.plan.api_rate_limit }} requests per hour
+                </p>
+
+                <h6 class="mt-3">Available Endpoints</h6>
+                <ul>
+                  <li><code>GET /api/v1/buoys</code> - List all IoT buoys</li>
+                  <li>
+                    <code>GET /api/v1/buoys/{id}/data</code> - Get buoy data
+                  </li>
+                  {% if item.subscription.plan.plan_type != 'basic_user' %}
+                  <li>
+                    <code>GET /api/v1/environmental-data</code> - Environmental
+                    analytics
+                  </li>
+                  <li>
+                    <code>GET /api/v1/historical-data</code> - Historical
+                    datasets
+                  </li>
+                  {% endif %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyToken(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(element.value);
+
+    // Show feedback
+    const button = element.nextElementSibling;
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i>';
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+    }, 2000);
+  }
+</script>
+{% endblock %}

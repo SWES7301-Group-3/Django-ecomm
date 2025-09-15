@@ -1,0 +1,371 @@
+{% extends "base.html" %}
+<!-- Enforcing Newline After Block -->
+{% block title %}Checkout{% endblock %}
+<!-- Enforcing Newline After Block -->
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <h2 class="mb-4">Checkout</h2>
+      <form method="post" id="checkout-form" class="card p-4 shadow-sm">
+        {% csrf_token %}
+        <h4 class="mb-3">Shipping Address</h4>
+        <div class="row mb-2">
+          <div class="col-md-6 mb-2">
+            <input
+              type="text"
+              name="shipping_name"
+              class="form-control"
+              placeholder="Full Name"
+              required
+            />
+          </div>
+          <div class="col-md-6 mb-2">
+            <input
+              type="text"
+              name="shipping_address"
+              class="form-control"
+              placeholder="Street Address"
+              required
+            />
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-4 mb-2">
+            <input
+              type="text"
+              name="shipping_city"
+              class="form-control"
+              placeholder="City"
+              required
+            />
+          </div>
+          <div class="col-md-4 mb-2">
+            <input
+              type="text"
+              name="shipping_state"
+              class="form-control"
+              placeholder="State"
+            />
+          </div>
+          <div class="col-md-4 mb-2">
+            <input
+              type="text"
+              name="shipping_zip"
+              class="form-control"
+              placeholder="ZIP"
+              required
+            />
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6 mb-2">
+            <input
+              type="text"
+              name="shipping_country"
+              class="form-control"
+              placeholder="Country"
+              required
+            />
+          </div>
+        </div>
+
+        <h4 class="mb-3 mt-4">
+          Billing Address <small class="text-muted">(Optional)</small>
+        </h4>
+        <div class="row mb-2">
+          <div class="col-md-6 mb-2">
+            <input
+              type="text"
+              name="billing_name"
+              class="form-control"
+              placeholder="Full Name"
+            />
+          </div>
+          <div class="col-md-6 mb-2">
+            <input
+              type="text"
+              name="billing_address"
+              class="form-control"
+              placeholder="Street Address"
+            />
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-4 mb-2">
+            <input
+              type="text"
+              name="billing_city"
+              class="form-control"
+              placeholder="City"
+            />
+          </div>
+          <div class="col-md-4 mb-2">
+            <input
+              type="text"
+              name="billing_state"
+              class="form-control"
+              placeholder="State"
+            />
+          </div>
+          <div class="col-md-4 mb-2">
+            <input
+              type="text"
+              name="billing_zip"
+              class="form-control"
+              placeholder="ZIP"
+            />
+          </div>
+        </div>
+        <div class="row mb-2">
+          <div class="col-md-6 mb-2">
+            <input
+              type="text"
+              name="billing_country"
+              class="form-control"
+              placeholder="Country"
+            />
+          </div>
+        </div>
+
+        <hr class="my-4" />
+        <div class="mb-3">
+          <h5>
+            Total: <span class="text-success">${{ total|floatformat:2 }}</span>
+          </h5>
+        </div>
+
+        <!-- Payment Options Tabs -->
+        <ul class="nav nav-tabs mb-3" id="paymentTab" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link active"
+              id="stripe-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#stripe-pane"
+              type="button"
+              role="tab"
+              aria-controls="stripe-pane"
+              aria-selected="true"
+            >
+              Credit/Debit Card
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+              class="nav-link"
+              id="paypal-tab"
+              data-bs-toggle="tab"
+              data-bs-target="#paypal-pane"
+              type="button"
+              role="tab"
+              aria-controls="paypal-pane"
+              aria-selected="false"
+            >
+              PayPal
+            </button>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="paymentTabContent">
+          <!-- Stripe Payment Section -->
+          <div
+            class="tab-pane fade show active"
+            id="stripe-pane"
+            role="tabpanel"
+            aria-labelledby="stripe-tab"
+          >
+            <h4 class="mb-3 mt-2">Card Payment</h4>
+            <div id="card-element" class="form-control mb-3"></div>
+            <div id="card-errors" class="text-danger mb-3"></div>
+            <div
+              id="payment-spinner"
+              class="text-center my-3"
+              style="display: none"
+            >
+              <div class="spinner-border text-success" role="status">
+                <span class="visually-hidden">Processing payment...</span>
+              </div>
+              <div class="fw-bold mt-2">Processing payment, please wait...</div>
+            </div>
+            <div
+              id="payment-message"
+              class="text-center fw-bold my-3"
+              style="display: none"
+            ></div>
+            <button
+              type="submit"
+              class="btn btn-success w-100 py-2"
+              id="pay-button"
+            >
+              Place Order &amp; Pay
+            </button>
+          </div>
+          <!-- PayPal Payment Section -->
+          <div
+            class="tab-pane fade"
+            id="paypal-pane"
+            role="tabpanel"
+            aria-labelledby="paypal-tab"
+          >
+            <h4 class="mb-3 mt-2">PayPal</h4>
+            <div id="paypal-button-container"></div>
+            <div
+              id="paypal-spinner"
+              class="text-center my-3"
+              style="display: none"
+            >
+              <div class="spinner-border text-info" role="status">
+                <span class="visually-hidden"
+                  >Processing PayPal payment...</span
+                >
+              </div>
+              <div class="fw-bold mt-2">
+                Processing PayPal payment, please wait...
+              </div>
+            </div>
+            <div
+              id="paypal-message"
+              class="text-center fw-bold my-3"
+              style="display: none"
+            ></div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Stripe.js & Payment Script -->
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    var stripe = Stripe("{{ STRIPE_PUBLIC_KEY }}");
+    var elements = stripe.elements();
+    var style = {
+      base: {
+        color: "#32325d",
+        fontFamily: "inherit",
+        fontSmoothing: "antialiased",
+        fontSize: "16px",
+        "::placeholder": { color: "#aab7c4" },
+      },
+      invalid: { color: "#fa755a", iconColor: "#fa755a" },
+    };
+    var card = elements.create("card", { style: style });
+    card.mount("#card-element");
+
+    card.on("change", function (event) {
+      var displayError = document.getElementById("card-errors");
+      displayError.textContent = event.error ? event.error.message : "";
+    });
+
+    var form = document.getElementById("checkout-form");
+    var spinner = document.getElementById("payment-spinner");
+    var payBtn = document.getElementById("pay-button");
+    var message = document.getElementById("payment-message");
+
+    form.addEventListener("submit", function (event) {
+      // Only process Stripe payment if Stripe tab is active
+      if (!document.getElementById("stripe-pane").classList.contains("active"))
+        return;
+      event.preventDefault();
+
+      spinner.style.display = "block";
+      payBtn.disabled = true;
+      message.style.display = "none";
+      document.getElementById("card-errors").textContent = "";
+
+      stripe.createToken(card).then(function (result) {
+        spinner.style.display = "none";
+        payBtn.disabled = false;
+        if (result.error) {
+          message.style.display = "block";
+          message.classList.remove("text-success");
+          message.classList.add("text-danger");
+          message.textContent = "Payment failed: " + result.error.message;
+        } else {
+          message.style.display = "block";
+          message.classList.remove("text-danger");
+          message.classList.add("text-success");
+          message.textContent = "Payment successful! Placing your order...";
+          // Delay to show success message before submitting
+          setTimeout(function () {
+            var hiddenInput = document.createElement("input");
+            hiddenInput.setAttribute("type", "hidden");
+            hiddenInput.setAttribute("name", "stripeToken");
+            hiddenInput.setAttribute("value", result.token.id);
+            form.appendChild(hiddenInput);
+            form.submit();
+          }, 1200);
+        }
+      });
+    });
+  });
+</script>
+
+<!-- PayPal JS SDK (replace sb with your PayPal client-id for production) -->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    paypal
+      .Buttons({
+        style: {
+          layout: "vertical",
+          color: "gold",
+          shape: "rect",
+          label: "paypal",
+        },
+        createOrder: function (data, actions) {
+          document.getElementById("paypal-spinner").style.display = "block";
+          return actions.order.create({
+            purchase_units: [
+              {
+                amount: {
+                  value: "{{ total|floatformat:2 }}",
+                },
+              },
+            ],
+          });
+        },
+        onApprove: function (data, actions) {
+          return actions.order.capture().then(function (details) {
+            document.getElementById("paypal-spinner").style.display = "none";
+            document.getElementById("paypal-message").style.display = "block";
+            document
+              .getElementById("paypal-message")
+              .classList.remove("text-danger");
+            document
+              .getElementById("paypal-message")
+              .classList.add("text-success");
+            document.getElementById("paypal-message").textContent =
+              "Payment successful! Placing your order...";
+            // Submit the form with PayPal details (you may want to send details via AJAX)
+            var form = document.getElementById("checkout-form");
+            var hiddenInput = document.createElement("input");
+            hiddenInput.setAttribute("type", "hidden");
+            hiddenInput.setAttribute("name", "paypalOrderId");
+            hiddenInput.setAttribute("value", data.orderID);
+            form.appendChild(hiddenInput);
+            setTimeout(function () {
+              form.submit();
+            }, 1200);
+          });
+        },
+        onError: function (err) {
+          document.getElementById("paypal-spinner").style.display = "none";
+          document.getElementById("paypal-message").style.display = "block";
+          document
+            .getElementById("paypal-message")
+            .classList.remove("text-success");
+          document
+            .getElementById("paypal-message")
+            .classList.add("text-danger");
+          document.getElementById("paypal-message").textContent =
+            "Payment failed: " + err;
+        },
+      })
+      .render("#paypal-button-container");
+  });
+</script>
+{% endblock %}

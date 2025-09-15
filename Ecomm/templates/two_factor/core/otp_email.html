@@ -1,0 +1,12 @@
+{% extends "two_factor/_base.html" %} {% block content %}
+<form method="post">
+  {% csrf_token %}
+  <label for="otp_code">Enter the OTP sent to your email:</label>
+  <input type="text" name="otp_code" maxlength="6" required />
+  <button type="submit">Verify</button>
+</form>
+<form method="post" action="{% url 'two_factor:otp_resend' %}">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-link">Resend OTP</button>
+</form>
+{% endblock %}

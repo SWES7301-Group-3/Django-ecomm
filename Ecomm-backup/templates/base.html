@@ -1,0 +1,976 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>
+      {% block title %}BlueWave Solutions - Desalination Technology <!--
+      Enforcing Newline After Block --> {% endblock %}
+    </title>
+
+    <!-- SEO Meta Tags -->
+    <meta
+      name="description"
+      content="BlueWave Solutions - Premium solar-powered desalination systems for clean water production"
+    />
+    <meta
+      name="keywords"
+      content="desalination, solar power, water purification, IoT, sustainable technology"
+    />
+    <meta name="author" content="BlueWave Solutions" />
+
+    <!-- Bootstrap 5 CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{% static 'css/auth.css' %}" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}" />
+
+    <style>
+      /* !IMPORTANT Bootstrap-First Navbar Styles */
+      body {
+        font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif !important;
+        background-color: #f8f9fa !important;
+      }
+
+      /* Navbar Base Styles */
+      .navbar {
+        padding: 0.5rem 0 !important;
+        transition: all 0.3s ease !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        background-color: white !important;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+      }
+
+      .navbar.scrolled {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+        padding: 0.25rem 0 !important;
+      }
+
+      /* Brand Container - Bootstrap + Custom */
+      .navbar-brand {
+        padding: 0 !important;
+        margin-right: 1rem !important;
+      }
+
+      .brand-container {
+        display: flex !important;
+        align-items: center !important;
+        text-decoration: none !important;
+      }
+
+      .brand-icon {
+        width: 32px !important;
+        height: 32px !important;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 100%
+        ) !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        margin-right: 0.5rem !important;
+        color: white !important;
+        font-size: 1rem !important;
+      }
+
+      .brand-name {
+        font-weight: 700 !important;
+        font-size: 1.1rem !important;
+        color: #2d3748 !important;
+        margin: 0 !important;
+      }
+
+      /* Navigation Links - Bootstrap Enhanced */
+      .navbar-nav .nav-link {
+        font-weight: 500 !important;
+        color: #4a5568 !important;
+        transition: all 0.3s ease !important;
+        padding: 0.4rem 0.75rem !important;
+        border-radius: 6px !important;
+        font-size: 0.9rem !important;
+        margin: 0 0.1rem !important;
+      }
+
+      .navbar-nav .nav-link i {
+        margin-right: 0.4rem !important;
+        font-size: 0.85rem !important;
+      }
+
+      .navbar-nav .nav-link:hover,
+      .navbar-nav .nav-link.active {
+        color: #667eea !important;
+        background-color: rgba(102, 126, 234, 0.1) !important;
+      }
+
+      .nav-text {
+        display: inline-block !important;
+      }
+
+      /* Dropdown Menus - Bootstrap Enhanced */
+      .dropdown-menu {
+        border-radius: 8px !important;
+        padding: 0.25rem 0 !important;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15) !important;
+        border: 1px solid rgba(0, 0, 0, 0.08) !important;
+        font-size: 0.9rem !important;
+        margin-top: 0.5rem !important;
+      }
+
+      .dropdown-item {
+        padding: 0.4rem 1rem !important;
+        font-weight: 500 !important;
+        color: #4a5568 !important;
+        transition: all 0.2s ease !important;
+      }
+
+      .dropdown-item i {
+        margin-right: 0.5rem !important;
+        font-size: 0.8rem !important;
+        width: 14px !important;
+      }
+
+      .dropdown-item:hover {
+        background-color: rgba(102, 126, 234, 0.1) !important;
+        color: #667eea !important;
+      }
+
+      .dropdown-header {
+        padding: 0.5rem 1rem 0.25rem !important;
+        font-weight: 600 !important;
+        color: #2d3748 !important;
+        font-size: 0.85rem !important;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+        margin-bottom: 0.25rem !important;
+      }
+
+      /* Search Bar - Bootstrap Input Groups Enhanced */
+      .search-container {
+        min-width: 200px !important;
+        max-width: 300px !important;
+      }
+
+      .search-input.form-control {
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 6px 0 0 6px !important;
+        padding: 0.4rem 0.75rem !important;
+        font-size: 0.85rem !important;
+        height: 32px !important;
+        transition: all 0.3s ease !important;
+        background-color: #f8f9fa !important;
+      }
+
+      .search-input.form-control:focus {
+        border-color: #667eea !important;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.1) !important;
+        background-color: white !important;
+      }
+
+      .search-btn.btn {
+        border: 1px solid #667eea !important;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 100%
+        ) !important;
+        color: white !important;
+        border-radius: 0 6px 6px 0 !important;
+        padding: 0.4rem 0.75rem !important;
+        height: 32px !important;
+        font-size: 0.85rem !important;
+        transition: all 0.3s ease !important;
+      }
+
+      .search-btn.btn:hover {
+        transform: translateY(-1px) !important;
+        box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+        background: linear-gradient(
+          135deg,
+          #5a6fd8 0%,
+          #6b46c1 100%
+        ) !important;
+      }
+
+      /* User Action Icons - Bootstrap Enhanced */
+      .nav-icon-link {
+        position: relative !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 32px !important;
+        height: 32px !important;
+        background: #f7fafc !important;
+        border-radius: 6px !important;
+        color: #4a5568 !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+        font-size: 0.85rem !important;
+      }
+
+      .nav-icon-link:hover {
+        background: #667eea !important;
+        color: white !important;
+        transform: translateY(-1px) !important;
+      }
+
+      .icon-badge {
+        position: absolute !important;
+        top: -4px !important;
+        right: -4px !important;
+        background: #dc3545 !important;
+        color: white !important;
+        font-size: 0.6rem !important;
+        font-weight: 600 !important;
+        min-width: 16px !important;
+        height: 16px !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        border: 2px solid white !important;
+      }
+
+      /* User Dropdown - Bootstrap Enhanced */
+      .user-dropdown-toggle {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.25rem 0.5rem !important;
+        border-radius: 6px !important;
+        color: #4a5568 !important;
+        text-decoration: none !important;
+        transition: all 0.3s ease !important;
+      }
+
+      .user-dropdown-toggle:hover {
+        background: rgba(102, 126, 234, 0.1) !important;
+        color: #667eea !important;
+      }
+
+      .user-avatar {
+        width: 28px !important;
+        height: 28px !important;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 100%
+        ) !important;
+        border-radius: 6px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: white !important;
+        margin-right: 0.4rem !important;
+        font-size: 0.8rem !important;
+      }
+
+      .user-avatar-large {
+        width: 32px !important;
+        height: 32px !important;
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 100%
+        ) !important;
+        border-radius: 8px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: white !important;
+        margin-right: 0.5rem !important;
+        font-size: 0.9rem !important;
+      }
+
+      .user-name {
+        font-weight: 500 !important;
+        font-size: 0.85rem !important;
+        max-width: 100px !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        white-space: nowrap !important;
+      }
+
+      .user-dropdown {
+        min-width: 220px !important;
+      }
+
+      .user-info {
+        display: flex !important;
+        align-items: center !important;
+        padding: 0.25rem 0 !important;
+      }
+
+      /* Notification Dropdown - Bootstrap Enhanced */
+      .notification-dropdown {
+        min-width: 260px !important;
+        max-width: 300px !important;
+      }
+
+      .notification-item {
+        display: flex !important;
+        align-items: flex-start !important;
+        gap: 0.4rem !important;
+      }
+
+      .notification-content {
+        flex: 1 !important;
+      }
+
+      .notification-content strong {
+        font-size: 0.85rem !important;
+        display: block !important;
+      }
+
+      .notification-content small {
+        font-size: 0.75rem !important;
+        color: #6b7280 !important;
+        display: block !important;
+      }
+
+      /* Bootstrap Buttons Enhanced */
+      .btn-sm {
+        padding: 0.25rem 0.5rem !important;
+        font-size: 0.8rem !important;
+        border-radius: 6px !important;
+        font-weight: 500 !important;
+      }
+
+      .btn-outline-primary {
+        border-color: #667eea !important;
+        color: #667eea !important;
+      }
+
+      .btn-outline-primary:hover {
+        background-color: #667eea !important;
+        border-color: #667eea !important;
+        color: white !important;
+      }
+
+      .btn-primary {
+        background: linear-gradient(
+          135deg,
+          #667eea 0%,
+          #764ba2 100%
+        ) !important;
+        border-color: #667eea !important;
+      }
+
+      .btn-primary:hover {
+        background: linear-gradient(
+          135deg,
+          #5a6fd8 0%,
+          #6b46c1 100%
+        ) !important;
+        border-color: #5a6fd8 !important;
+      }
+
+      /* Alerts - Bootstrap Enhanced */
+      .custom-alert {
+        border-radius: 8px !important;
+        border: none !important;
+        padding: 0.75rem 1rem !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        margin-bottom: 1rem !important;
+      }
+
+      .alert-content {
+        display: flex !important;
+        align-items: center !important;
+      }
+
+      .alert-icon {
+        font-size: 1rem !important;
+        margin-right: 0.5rem !important;
+      }
+
+      .alert-message {
+        font-weight: 500 !important;
+        font-size: 0.9rem !important;
+      }
+
+      /* Footer - Bootstrap Enhanced */
+      .footer {
+        background: linear-gradient(
+          135deg,
+          #2d3748 0%,
+          #4a5568 100%
+        ) !important;
+        margin-top: auto !important;
+      }
+
+      .footer-brand {
+        font-size: 1.1rem !important;
+        margin-bottom: 0 !important;
+        font-weight: 600 !important;
+      }
+
+      .footer-link {
+        color: #a0aec0 !important;
+        text-decoration: none !important;
+        margin-left: 0.75rem !important;
+        font-size: 0.85rem !important;
+        transition: color 0.3s ease !important;
+      }
+
+      .footer-link:hover {
+        color: #667eea !important;
+      }
+
+      /* Mobile Responsiveness - Bootstrap Enhanced */
+      @media (max-width: 991.98px) {
+        .search-container {
+          min-width: auto !important;
+          width: 100% !important;
+          margin: 0.5rem 0 !important;
+        }
+
+        .user-actions {
+          margin-top: 0.5rem !important;
+          justify-content: center !important;
+        }
+
+        .navbar-nav {
+          text-align: center !important;
+        }
+
+        .nav-text {
+          margin-left: 0.25rem !important;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .nav-text {
+          display: none !important;
+        }
+
+        .nav-link i {
+          margin-right: 0 !important;
+        }
+
+        .search-container {
+          margin: 0.25rem 0 !important;
+        }
+      }
+
+      @media (max-width: 576px) {
+        .brand-name {
+          display: none !important;
+        }
+
+        .search-input {
+          font-size: 0.8rem !important;
+        }
+
+        .footer .row > div {
+          text-align: center !important;
+          margin-bottom: 0.5rem !important;
+        }
+
+        .footer-link {
+          margin: 0 0.25rem !important;
+          font-size: 0.8rem !important;
+        }
+      }
+
+      /* Hide elements on smaller screens */
+      @media (max-width: 1200px) {
+        .user-name {
+          display: none !important;
+        }
+
+        .fa-chevron-down {
+          display: none !important;
+        }
+      }
+
+      /* Navbar Toggler - Bootstrap Enhanced */
+      .navbar-toggler {
+        border: 1px solid rgba(0, 0, 0, 0.1) !important;
+        padding: 0.25rem 0.5rem !important;
+      }
+
+      .navbar-toggler:focus {
+        box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25) !important;
+      }
+
+      /* Container - Bootstrap Enhanced */
+      .container {
+        max-width: 1200px !important;
+      }
+
+      /* Prevent any other stylesheet overrides */
+      .navbar * {
+        box-sizing: border-box !important;
+      }
+
+      /* Ensure Bootstrap flex utilities work properly */
+      .d-flex {
+        display: flex !important;
+      }
+
+      .align-items-center {
+        align-items: center !important;
+      }
+
+      .justify-content-center {
+        justify-content: center !important;
+      }
+
+      .me-2 {
+        margin-right: 0.5rem !important;
+      }
+
+      .ms-1 {
+        margin-left: 0.25rem !important;
+      }
+
+      .text-center {
+        text-align: center !important;
+      }
+
+      /* Custom utility overrides */
+      .d-none {
+        display: none !important;
+      }
+
+      .d-md-inline {
+        display: inline !important;
+      }
+
+      @media (max-width: 767.98px) {
+        .d-md-inline {
+          display: none !important;
+        }
+      }
+
+      .d-lg-inline {
+        display: inline !important;
+      }
+
+      @media (max-width: 991.98px) {
+        .d-lg-inline {
+          display: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!-- Enhanced Bootstrap Navbar -->
+    <nav
+      class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top"
+    >
+      <div class="container">
+        <!-- Brand -->
+        <a class="navbar-brand" href="{% url 'core:landing_page' %}">
+          <div class="brand-container">
+            <div class="brand-icon">
+              <i class="fas fa-tint"></i>
+            </div>
+            <div class="brand-text">
+              <span class="brand-name">BlueWave</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Mobile Toggler -->
+        <button
+          class="navbar-toggler border-0"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Collapsible Content -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <!-- Navigation Links -->
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'core:landing_page' %}">
+                <i class="fas fa-home"></i>
+                <span class="nav-text">Home</span>
+              </a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                id="productsDropdown"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <i class="fas fa-box"></i>
+                <span class="nav-text">Products</span>
+              </a>
+              <ul
+                class="dropdown-menu shadow border-0"
+                aria-labelledby="productsDropdown"
+              >
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{% url 'products:product_list' %}"
+                  >
+                    <i class="fas fa-list"></i>All Products
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{% url 'products:product_list' %}?category=residential"
+                  >
+                    <i class="fas fa-home"></i>Residential
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{% url 'products:product_list' %}?category=commercial"
+                  >
+                    <i class="fas fa-building"></i>Commercial
+                  </a>
+                </li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{% url 'products:product_list' %}?featured=1"
+                  >
+                    <i class="fas fa-star"></i>Featured
+                  </a>
+                </li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a
+                    class="dropdown-item"
+                    href="{% url 'subscriptions:plan_list' %}"
+                  >
+                    <i class="fas fa-database"></i>Data Plans
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'core:about' %}">
+                <i class="fas fa-info-circle"></i>
+                <span class="nav-text">About</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'core:contact' %}">
+                <i class="fas fa-envelope"></i>
+                <span class="nav-text">Contact</span>
+              </a>
+            </li>
+          </ul>
+
+          <!-- Search Bar -->
+          <div class="search-container me-2">
+            <form
+              class="search-form"
+              method="get"
+              action="{% url 'products:product_list' %}"
+            >
+              <div class="input-group">
+                <input
+                  type="search"
+                  name="search"
+                  class="form-control search-input"
+                  placeholder="Search..."
+                  value="{{ request.GET.search|default:'' }}"
+                />
+                <button class="btn search-btn" type="submit">
+                  <i class="fas fa-search"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <!-- User Actions -->
+          <div class="user-actions d-flex align-items-center">
+            {% if user.is_authenticated %}
+            <!-- Cart -->
+            <a
+              href="{% url 'cart:cart_detail' %}"
+              class="nav-icon-link me-2"
+              title="Shopping Cart"
+            >
+              <i class="fas fa-shopping-cart"></i>
+              <span class="icon-badge" id="cart-count">0</span>
+            </a>
+
+            <!-- Notifications -->
+            <div class="dropdown me-2">
+              <a
+                href="#"
+                class="nav-icon-link"
+                data-bs-toggle="dropdown"
+                title="Notifications"
+                aria-expanded="false"
+              >
+                <i class="fas fa-bell"></i>
+                <span class="icon-badge">2</span>
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-end notification-dropdown shadow border-0"
+              >
+                <div class="dropdown-header">
+                  <i class="fas fa-bell me-1"></i>Notifications
+                </div>
+                <a class="dropdown-item" href="#">
+                  <div class="notification-item">
+                    <i class="fas fa-truck text-success"></i>
+                    <div class="notification-content">
+                      <strong>Order Shipped</strong>
+                      <small>Order #1234 shipped</small>
+                    </div>
+                  </div>
+                </a>
+                <a class="dropdown-item" href="#">
+                  <div class="notification-item">
+                    <i class="fas fa-percentage text-warning"></i>
+                    <div class="notification-content">
+                      <strong>Special Offer</strong>
+                      <small>20% off residential units</small>
+                    </div>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item text-center" href="#">
+                  <small>View all</small>
+                </a>
+              </div>
+            </div>
+
+            <!-- User Menu -->
+            <div class="dropdown">
+              <a
+                href="#"
+                class="user-dropdown-toggle"
+                data-bs-toggle="dropdown"
+                title="Account Menu"
+                aria-expanded="false"
+              >
+                <div class="user-avatar">
+                  <i class="fas fa-user"></i>
+                </div>
+                <span class="user-name d-none d-lg-inline"
+                  >{{ user.get_full_name|default:user.username }}</span
+                >
+                <i class="fas fa-chevron-down ms-1 d-none d-lg-inline"></i>
+              </a>
+              <div
+                class="dropdown-menu dropdown-menu-end user-dropdown shadow border-0"
+              >
+                <div class="dropdown-header">
+                  <div class="user-info">
+                    <div class="user-avatar-large">
+                      <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                      <strong
+                        >{{ user.get_full_name|default:user.username }}</strong
+                      >
+                      <small class="text-muted d-block">{{ user.email }}</small>
+                    </div>
+                  </div>
+                </div>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="{% url 'core:dashboard' %}">
+                  <i class="fas fa-tachometer-alt"></i>Dashboard
+                </a>
+                <a class="dropdown-item" href="{% url 'profile_page' %}">
+                  <i class="fas fa-user-circle"></i>Profile
+                </a>
+                <a
+                  class="dropdown-item"
+                  href="{% url 'orders:order_history' %}"
+                >
+                  <i class="fas fa-shopping-bag"></i>Orders
+                </a>
+                <a
+                  class="dropdown-item"
+                  href="{% url 'subscriptions:my_subscriptions' %}"
+                >
+                  <i class="fas fa-database"></i>Subscriptions
+                </a>
+                {% if user.is_staff %}
+                <div class="dropdown-divider"></div>
+                <a
+                  class="dropdown-item"
+                  href="{% url 'products:admin_product_list' %}"
+                >
+                  <i class="fas fa-tools"></i>Admin Panel
+                </a>
+                {% endif %}
+                <div class="dropdown-divider"></div>
+                <a
+                  class="dropdown-item text-danger"
+                  href="{% url 'logout_view' %}"
+                >
+                  <i class="fas fa-sign-out-alt"></i>Logout
+                </a>
+              </div>
+            </div>
+            {% else %}
+            <!-- Guest Actions -->
+            <a
+              class="btn btn-outline-primary btn-sm me-2"
+              href="{% url 'register_page' %}"
+            >
+              <i class="fas fa-user-plus"></i>
+              <span class="d-none d-md-inline ms-1">Sign Up</span>
+            </a>
+            <a class="btn btn-primary btn-sm" href="{% url 'login_page' %}">
+              <i class="fas fa-sign-in-alt"></i>
+              <span class="d-none d-md-inline ms-1">Sign In</span>
+            </a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-fill">
+      {% if messages %}
+      <div class="container mt-2">
+        {% for message in messages %}
+        <div
+          class="alert alert-{{ message.tags }} alert-dismissible fade show custom-alert"
+          role="alert"
+        >
+          <div class="alert-content">
+            {% if message.tags == 'success' %}
+            <i class="fas fa-check-circle alert-icon"></i>
+            {% elif message.tags == 'error' %}
+            <i class="fas fa-exclamation-triangle alert-icon"></i>
+            {% elif message.tags == 'warning' %}
+            <i class="fas fa-exclamation-circle alert-icon"></i>
+            {% else %}
+            <i class="fas fa-info-circle alert-icon"></i>
+            {% endif %}
+            <span class="alert-message">{{ message }}</span>
+          </div>
+          <button
+            type="button"
+            class="btn-close"
+            data-bs-dismiss="alert"
+            aria-label="Close"
+          ></button>
+        </div>
+        {% endfor %}
+      </div>
+      {% endif %} {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer py-3 bg-dark text-light mt-auto">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-6">
+            <div class="footer-brand">
+              <i class="fas fa-tint me-2"></i>
+              <strong>BlueWave Solutions</strong>
+            </div>
+          </div>
+          <div class="col-md-6 text-md-end">
+            <div class="footer-links">
+              <a href="{% url 'core:about' %}" class="footer-link">About</a>
+              <a href="{% url 'core:contact' %}" class="footer-link">Contact</a>
+              <a href="#" class="footer-link">Privacy</a>
+              <a href="#" class="footer-link">Terms</a>
+            </div>
+          </div>
+        </div>
+        <hr class="my-2 opacity-25" />
+        <div class="row">
+          <div class="col-12 text-center">
+            <small class="text-muted">
+              &copy; 2025 BlueWave Solutions. All rights reserved.
+            </small>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Active nav link highlighting
+        const currentPath = window.location.pathname;
+        const navLinks = document.querySelectorAll(".nav-link");
+
+        navLinks.forEach((link) => {
+          if (link.getAttribute("href") === currentPath) {
+            link.classList.add("active");
+          }
+        });
+
+        // Cart count update
+        updateCartCount();
+
+        // Hide empty badges
+        document.querySelectorAll(".icon-badge").forEach((badge) => {
+          if (parseInt(badge.textContent) === 0) {
+            badge.style.display = "none";
+          }
+        });
+      });
+
+      function updateCartCount() {
+        const cartBadge = document.getElementById("cart-count");
+        if (cartBadge) {
+          cartBadge.textContent = "0";
+        }
+      }
+
+      // Navbar scroll effect
+      window.addEventListener("scroll", function () {
+        const navbar = document.querySelector(".navbar");
+        if (window.scrollY > 20) {
+          navbar.classList.add("scrolled");
+        } else {
+          navbar.classList.remove("scrolled");
+        }
+      });
+
+      // Auto-close mobile menu when clicking links
+      document.querySelectorAll(".navbar-nav .nav-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          const navbarCollapse = document.querySelector(".navbar-collapse");
+          if (navbarCollapse.classList.contains("show")) {
+            const bsCollapse = new bootstrap.Collapse(navbarCollapse);
+            bsCollapse.hide();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

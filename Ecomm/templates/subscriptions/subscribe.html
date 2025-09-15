@@ -1,0 +1,428 @@
+{% extends "base.html" %}
+<!-- Subscription Page -->
+{% load static %} {% block title %}{{ page_title }}{% endblock %}
+<!-- Subscription Page -->
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h3 class="mb-0">
+            <i class="fas fa-credit-card me-2"></i>Subscribe to {{ plan.name }}
+          </h3>
+        </div>
+        <div class="card-body">
+          <!-- Plan Details -->
+          <div class="row mb-4">
+            <div class="col-md-6">
+              <h5>Plan Details</h5>
+              <ul class="list-unstyled">
+                <li><strong>Plan:</strong> {{ plan.name }}</li>
+                <li><strong>Type:</strong> {{ plan.get_plan_type_display }}</li>
+                <li>
+                  <strong>Duration:</strong> {{ plan.duration_days }} days
+                </li>
+                <li>
+                  <strong>Rate Limit:</strong> {{ plan.api_rate_limit }}
+                  calls/hour
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-6">
+              <h5>Features</h5>
+              <ul class="list-unstyled">
+                {% for feature in plan.features %}
+                <li>
+                  <i class="fas fa-check text-success me-2"></i>{{ feature }}
+                </li>
+                {% endfor %}
+              </ul>
+            </div>
+          </div>
+
+          <!-- Price -->
+          <div class="text-center mb-4">
+            <div class="display-4 fw-bold text-primary">
+              ${{ plan.price }}
+              <small class="fs-6 text-muted"
+                >/{{ plan.duration_days }} days</small
+              >
+            </div>
+          </div>
+
+          <hr class="my-4" />
+
+          <!-- Payment Form -->
+          <form id="payment-form" method="post" class="mb-4">
+            {% csrf_token %}
+
+            <!-- Payment Options Tabs -->
+            <ul class="nav nav-tabs mb-3" id="paymentTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link active"
+                  id="stripe-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#stripe-pane"
+                  type="button"
+                  role="tab"
+                  aria-controls="stripe-pane"
+                  aria-selected="true"
+                >
+                  <i class="fas fa-credit-card me-2"></i>Credit/Debit Card
+                </button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button
+                  class="nav-link"
+                  id="paypal-tab"
+                  data-bs-toggle="tab"
+                  data-bs-target="#paypal-pane"
+                  type="button"
+                  role="tab"
+                  aria-controls="paypal-pane"
+                  aria-selected="false"
+                >
+                  <i class="fab fa-paypal me-2"></i>PayPal
+                </button>
+              </li>
+            </ul>
+
+            <div class="tab-content" id="paymentTabContent">
+              <!-- Stripe Payment Section -->
+              <div
+                class="tab-pane fade show active"
+                id="stripe-pane"
+                role="tabpanel"
+                aria-labelledby="stripe-tab"
+              >
+                <h5 class="mb-3">Card Payment</h5>
+                <div class="form-group mb-3">
+                  <label for="card-element" class="form-label"
+                    >Credit or Debit Card</label
+                  >
+                  <div
+                    id="card-element"
+                    class="form-control"
+                    style="height: 45px; padding: 10px"
+                  ></div>
+                  <div id="card-errors" class="text-danger mt-2"></div>
+                </div>
+
+                <div
+                  id="payment-spinner"
+                  class="text-center my-3"
+                  style="display: none"
+                >
+                  <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Processing payment...</span>
+                  </div>
+                  <div class="fw-bold mt-2">
+                    Processing payment, please wait...
+                  </div>
+                </div>
+
+                <div
+                  id="payment-message"
+                  class="text-center fw-bold my-3"
+                  style="display: none"
+                ></div>
+
+                <div class="d-grid gap-2">
+                  <button
+                    type="submit"
+                    id="stripe-submit-button"
+                    class="btn btn-primary btn-lg"
+                  >
+                    <i class="fas fa-credit-card me-2"></i>
+                    <span id="button-text"
+                      >Subscribe Now for ${{ plan.price }}</span
+                    >
+                  </button>
+                </div>
+              </div>
+
+              <!-- PayPal Payment Section -->
+              <div
+                class="tab-pane fade"
+                id="paypal-pane"
+                role="tabpanel"
+                aria-labelledby="paypal-tab"
+              >
+                <h5 class="mb-3">PayPal Payment</h5>
+                <div id="paypal-button-container"></div>
+
+                <div
+                  id="paypal-spinner"
+                  class="text-center my-3"
+                  style="display: none"
+                >
+                  <div class="spinner-border text-info" role="status">
+                    <span class="visually-hidden"
+                      >Processing PayPal payment...</span
+                    >
+                  </div>
+                  <div class="fw-bold mt-2">
+                    Processing PayPal payment, please wait...
+                  </div>
+                </div>
+
+                <div
+                  id="paypal-message"
+                  class="text-center fw-bold my-3"
+                  style="display: none"
+                ></div>
+              </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="text-center mt-4">
+              <a
+                href="{% url 'subscriptions:subscription_plans' %}"
+                class="btn btn-outline-secondary"
+              >
+                <i class="fas fa-arrow-left me-2"></i>Back to Plans
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Stripe.js -->
+<script src="https://js.stripe.com/v3/"></script>
+
+<!-- PayPal SDK -->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=USD"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // ===== STRIPE SETUP =====
+    var stripe = Stripe("{{ stripe_public_key }}");
+    var elements = stripe.elements();
+
+    // Custom styling for Stripe elements
+    var style = {
+      base: {
+        color: "#32325d",
+        fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+        fontSmoothing: "antialiased",
+        fontSize: "16px",
+        "::placeholder": {
+          color: "#aab7c4",
+        },
+      },
+      invalid: {
+        color: "#fa755a",
+        iconColor: "#fa755a",
+      },
+    };
+
+    // Create card element
+    var card = elements.create("card", { style: style });
+    card.mount("#card-element");
+
+    // Handle real-time validation errors
+    card.on("change", function (event) {
+      var displayError = document.getElementById("card-errors");
+      if (event.error) {
+        displayError.textContent = event.error.message;
+      } else {
+        displayError.textContent = "";
+      }
+    });
+
+    // Handle Stripe form submission
+    var form = document.getElementById("payment-form");
+    var submitButton = document.getElementById("stripe-submit-button");
+    var buttonText = document.getElementById("button-text");
+    var spinner = document.getElementById("payment-spinner");
+    var message = document.getElementById("payment-message");
+
+    form.addEventListener("submit", function (event) {
+      // Only process if Stripe tab is active
+      if (
+        !document.getElementById("stripe-pane").classList.contains("active")
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+
+      // Show loading state
+      submitButton.disabled = true;
+      buttonText.textContent = "Processing...";
+      spinner.style.display = "block";
+      message.style.display = "none";
+      document.getElementById("card-errors").textContent = "";
+
+      stripe.createToken(card).then(function (result) {
+        spinner.style.display = "none";
+        submitButton.disabled = false;
+        buttonText.textContent = "Subscribe Now for ${{ plan.price }}";
+
+        if (result.error) {
+          // Show error
+          message.style.display = "block";
+          message.classList.remove("text-success");
+          message.classList.add("text-danger");
+          message.textContent = "Payment failed: " + result.error.message;
+        } else {
+          // Show success and submit
+          message.style.display = "block";
+          message.classList.remove("text-danger");
+          message.classList.add("text-success");
+          message.textContent =
+            "Payment successful! Setting up your subscription...";
+
+          // Add token to form and submit
+          setTimeout(function () {
+            var hiddenInput = document.createElement("input");
+            hiddenInput.setAttribute("type", "hidden");
+            hiddenInput.setAttribute("name", "stripeToken");
+            hiddenInput.setAttribute("value", result.token.id);
+            form.appendChild(hiddenInput);
+            form.submit();
+          }, 1200);
+        }
+      });
+    });
+
+    // ===== PAYPAL SETUP =====
+    paypal
+      .Buttons({
+        style: {
+          layout: "vertical",
+          color: "gold",
+          shape: "rect",
+          label: "paypal",
+        },
+        createOrder: function (data, actions) {
+          document.getElementById("paypal-spinner").style.display = "block";
+          return actions.order.create({
+            purchase_units: [
+              {
+                amount: {
+                  value: "{{ plan.price }}",
+                  currency_code: "USD",
+                },
+                description: "{{ plan.name }} Subscription",
+              },
+            ],
+          });
+        },
+        onApprove: function (data, actions) {
+          return actions.order.capture().then(function (details) {
+            document.getElementById("paypal-spinner").style.display = "none";
+            document.getElementById("paypal-message").style.display = "block";
+            document
+              .getElementById("paypal-message")
+              .classList.remove("text-danger");
+            document
+              .getElementById("paypal-message")
+              .classList.add("text-success");
+            document.getElementById("paypal-message").textContent =
+              "Payment successful! Setting up your subscription...";
+
+            // Submit form with PayPal details
+            var form = document.getElementById("payment-form");
+            var hiddenInput = document.createElement("input");
+            hiddenInput.setAttribute("type", "hidden");
+            hiddenInput.setAttribute("name", "paypalOrderId");
+            hiddenInput.setAttribute("value", data.orderID);
+            form.appendChild(hiddenInput);
+
+            var payerInput = document.createElement("input");
+            payerInput.setAttribute("type", "hidden");
+            payerInput.setAttribute("name", "paypalPayerEmail");
+            payerInput.setAttribute("value", details.payer.email_address);
+            form.appendChild(payerInput);
+
+            setTimeout(function () {
+              form.submit();
+            }, 1200);
+          });
+        },
+        onError: function (err) {
+          console.error("PayPal Error:", err);
+          document.getElementById("paypal-spinner").style.display = "none";
+          document.getElementById("paypal-message").style.display = "block";
+          document
+            .getElementById("paypal-message")
+            .classList.remove("text-success");
+          document
+            .getElementById("paypal-message")
+            .classList.add("text-danger");
+          document.getElementById("paypal-message").textContent =
+            "PayPal payment failed. Please try again.";
+        },
+        onCancel: function (data) {
+          document.getElementById("paypal-spinner").style.display = "none";
+          document.getElementById("paypal-message").style.display = "block";
+          document
+            .getElementById("paypal-message")
+            .classList.remove("text-success");
+          document
+            .getElementById("paypal-message")
+            .classList.add("text-warning");
+          document.getElementById("paypal-message").textContent =
+            "PayPal payment was cancelled.";
+        },
+      })
+      .render("#paypal-button-container");
+  });
+</script>
+
+<style>
+  /* Custom styles for Stripe Elements */
+  .StripeElement {
+    box-sizing: border-box;
+    height: 40px;
+    padding: 10px 12px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    background-color: white;
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    transition: box-shadow 150ms ease;
+  }
+
+  .StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+  }
+
+  .StripeElement--invalid {
+    border-color: #fa755a;
+  }
+
+  .StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+  }
+
+  /* PayPal button container */
+  #paypal-button-container {
+    min-height: 150px;
+  }
+
+  /* Tab styling */
+  .nav-tabs .nav-link {
+    border: none;
+    border-bottom: 3px solid transparent;
+    background: none;
+    color: #6c757d;
+  }
+
+  .nav-tabs .nav-link.active {
+    border-bottom-color: #0d6efd;
+    color: #0d6efd;
+    background: none;
+  }
+
+  .nav-tabs .nav-link:hover {
+    border-bottom-color: #0d6efd;
+    color: #0d6efd;
+  }
+</style>
+{% endblock %}

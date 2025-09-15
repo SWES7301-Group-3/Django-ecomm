@@ -1,0 +1,199 @@
+/* BlueWave Custom Admin Styles */
+
+/* Brand Colors */
+:root {
+  --bluewave-primary: #667eea;
+  --bluewave-secondary: #764ba2;
+  --bluewave-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --bluewave-light: #f0f4ff;
+  --bluewave-dark: #2d3748;
+}
+
+/* Custom Header Styling */
+.main-header.navbar {
+  background: var(--bluewave-gradient) !important;
+  border: none !important;
+}
+
+/* Brand Logo Styling */
+.brand-link {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.brand-text {
+  font-weight: 700 !important;
+  font-size: 1.2rem !important;
+}
+
+/* Sidebar Enhancements */
+.main-sidebar {
+  background: #2d3748 !important;
+}
+
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link.active,
+.sidebar-dark-primary .nav-sidebar > .nav-item > .nav-link:hover {
+  background: var(--bluewave-gradient) !important;
+  color: white !important;
+  border-radius: 5px !important;
+  margin: 2px 10px !important;
+}
+
+/* Cards and Panels */
+.card {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  border: none !important;
+}
+
+.card-header {
+  background: var(--bluewave-light) !important;
+  border-bottom: 2px solid var(--bluewave-primary) !important;
+  border-radius: 10px 10px 0 0 !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--bluewave-gradient) !important;
+  border: none !important;
+  border-radius: 6px !important;
+  font-weight: 500 !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px) !important;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Form Enhancements */
+.form-control {
+  border-radius: 6px !important;
+  border: 2px solid #e2e8f0 !important;
+  transition: all 0.3s ease !important;
+}
+
+.form-control:focus {
+  border-color: var(--bluewave-primary) !important;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1) !important;
+}
+
+/* Success Messages */
+.alert-success {
+  background: linear-gradient(135deg, #48bb78 0%, #38a169 100%) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  color: white !important;
+}
+
+/* Info Boxes */
+.info-box {
+  border-radius: 10px !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.info-box-icon {
+  background: var(--bluewave-gradient) !important;
+  border-radius: 10px 0 0 10px !important;
+}
+
+/* Login Page Enhancements */
+.login-page {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+}
+
+.login-box {
+  border-radius: 15px !important;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1) !important;
+  overflow: hidden !important;
+}
+
+.login-card-body {
+  background: white !important;
+  padding: 2rem !important;
+}
+
+.login-logo {
+  background: rgba(255, 255, 255, 0.95) !important;
+  padding: 1rem !important;
+  border-radius: 15px 15px 0 0 !important;
+}
+
+/* Tables */
+.table thead th {
+  background: var(--bluewave-light) !important;
+  color: var(--bluewave-dark) !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background: rgba(102, 126, 234, 0.05) !important;
+}
+
+/* Navigation Pills */
+.nav-pills .nav-link.active {
+  background: var(--bluewave-gradient) !important;
+  color: white !important;
+}
+
+/* Progress Bars */
+.progress-bar {
+  background: var(--bluewave-gradient) !important;
+}
+
+/* Custom Dashboard Widgets */
+.small-box {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+.small-box .icon {
+  font-size: 70px !important;
+  opacity: 0.8 !important;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.5s ease-out !important;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .brand-text {
+    display: none !important;
+  }
+
+  .main-sidebar {
+    margin-left: -250px !important;
+  }
+
+  .content-wrapper {
+    margin-left: 0 !important;
+  }
+}
+
+/* Dark Mode Support */
+@media (prefers-color-scheme: dark) {
+  .card {
+    background: #2d3748 !important;
+    color: #e2e8f0 !important;
+  }
+
+  .card-header {
+    background: #4a5568 !important;
+    color: #e2e8f0 !important;
+  }
+}

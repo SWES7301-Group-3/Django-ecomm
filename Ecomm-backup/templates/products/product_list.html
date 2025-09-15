@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Page Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card bg-gradient-primary text-white">
+                <div class="card-body">
+                    <h1 class="display-6 mb-2">
+                        <i class="fas fa-tint me-2"></i>Desalination Solutions
+                    </h1>
+                    <p class="lead mb-0">Solar-powered, IoT-enabled water purification systems</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-filter me-2"></i>Filter Products
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <form method="get" id="filter-form">
+                        <!-- Search -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Search</label>
+                            <input type="text" name="search" class="form-control form-control-sm" 
+                                   value="{{ search_query }}" placeholder="Search products...">
+                        </div>
+
+                        <!-- Categories -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Category</label>
+                            <select name="category" class="form-select form-select-sm">
+                                <option value="">All Categories</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}" 
+                                        {% if current_category == category.id %}selected{% endif %}>
+                                    {{ category.name }} ({{ category.product_count }})
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <!-- Sort -->
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Sort By</label>
+                            <select name="sort" class="form-select form-select-sm">
+                                <option value="name" {% if current_sort == 'name' %}selected{% endif %}>Name A-Z</option>
+                                <option value="price_low" {% if current_sort == 'price_low' %}selected{% endif %}>Price: Low to High</option>
+                                <option value="price_high" {% if current_sort == 'price_high' %}selected{% endif %}>Price: High to Low</option>
+                                <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest First</option>
+                            </select>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="fas fa-search me-1"></i>Apply Filters
+                            </button>
+                            <a href="{% url 'products:product_list' %}" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-times me-1"></i>Clear All
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Grid -->
+        <div class="col-lg-9">
+            {% if products %}
+            <!-- Results Info -->
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <small class="text-muted">
+                        Showing {{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }} products
+                    </small>
+                </div>
+                <div>
+                    {% if search_query %}
+                        <span class="badge bg-info">Search: "{{ search_query }}"</span>
+                    {% endif %}
+                    {% if current_category %}
+                        {% for category in categories %}
+                            {% if category.id == current_category %}
+                                <span class="badge bg-success">Category: {{ category.name }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="row">
+                {% for product in products %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="product-card card h-100 border-0 shadow-sm">
+                        <!-- Product Image -->
+                        <div class="position-relative">
+                            {% if product.image %}
+                            <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" 
+                                 style="height: 220px; object-fit: cover;">
+                            {% else %}
+                            <div class="card-img-top d-flex align-items-center justify-content-center bg-light" 
+                                 style="height: 220px;">
+                                <i class="fas fa-tint display-4 text-primary opacity-25"></i>
+                            </div>
+                            {% endif %}
+                            
+                            <!-- Product Badges -->
+                            <div class="position-absolute top-0 start-0 m-2">
+                                {% if product.is_featured %}
+                                <span class="badge bg-warning text-dark">Featured</span>
+                                {% endif %}
+                                {% if not product.is_in_stock %}
+                                <span class="badge bg-danger">Out of Stock</span>
+                                {% endif %}
+                            </div>
+                            
+                            <!-- Environmental Score -->
+                            <div class="position-absolute top-0 end-0 m-2">
+                                <div class="bg-success text-white rounded-pill px-2 py-1 small">
+                                    <i class="fas fa-leaf me-1"></i>{{ product.environmental_score }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <!-- Product Type Badge -->
+                            <div class="mb-2">
+                                <span class="badge bg-secondary">{{ product.get_product_type_display }}</span>
+                            </div>
+
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text text-muted small flex-grow-1">
+                                {{ product.description|truncatewords:15 }}
+                            </p>
+
+                            <!-- Key Specs -->
+                            <div class="spec-grid mb-3">
+                                {% if product.capacity_gallons_per_day %}
+                                <div class="spec-item">
+                                    <small class="text-muted">
+                                        <i class="fas fa-tint text-primary me-1"></i>
+                                        {{ product.capacity_gallons_per_day }} gal/day
+                                    </small>
+                                </div>
+                                {% endif %}
+                                {% if product.power_consumption_watts %}
+                                <div class="spec-item">
+                                    <small class="text-muted">
+                                        <i class="fas fa-bolt text-warning me-1"></i>
+                                        {{ product.power_consumption_watts }}W
+                                    </small>
+                                </div>
+                                {% endif %}
+                                {% if product.energy_source %}
+                                <div class="spec-item">
+                                    <small class="text-muted">
+                                        <i class="fas fa-solar-panel text-success me-1"></i>
+                                        {{ product.energy_source }}
+                                    </small>
+                                </div>
+                                {% endif %}
+                                {% if product.daily_co2_savings %}
+                                <div class="spec-item">
+                                    <small class="text-muted">
+                                        <i class="fas fa-seedling text-success me-1"></i>
+                                        {{ product.daily_co2_savings }}kg CO2/day
+                                    </small>
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Price and Actions -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <span class="h4 text-primary mb-0">${{ product.price|floatformat:2 }}</span>
+                                    {% if product.stock_quantity < 10 and product.is_in_stock %}
+                                        <br><small class="text-warning">Only {{ product.stock_quantity }} left!</small>
+                                    {% endif %}
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <a href="{{ product.get_absolute_url }}" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-eye me-1"></i>View
+                                    </a>
+                                    {% if product.is_in_stock %}
+                                    <form method="post" action="{% url 'cart:add_to_cart' product.id %}" class="d-inline">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="quantity" value="1">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-cart-plus me-1"></i>Add
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <button class="btn btn-secondary btn-sm" disabled>
+                                        <i class="fas fa-times me-1"></i>N/A
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            {% if products.has_other_pages %}
+            <div class="d-flex justify-content-center mt-4">
+                <nav aria-label="Product pagination">
+                    <ul class="pagination">
+                        {% if products.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if current_category %}category={{ current_category }}&{% endif %}sort={{ current_sort }}&page={{ products.previous_page_number }}">
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% for num in products.paginator.page_range %}
+                        {% if products.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                        {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if current_category %}category={{ current_category }}&{% endif %}sort={{ current_sort }}&page={{ num }}">{{ num }}</a>
+                        </li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if products.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if current_category %}category={{ current_category }}&{% endif %}sort={{ current_sort }}&page={{ products.next_page_number }}">
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+            {% else %}
+            <!-- No Products Found -->
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4 class="text-muted">No products found</h4>
+                <p class="text-muted mb-4">
+                    {% if search_query %}
+                        No products match your search criteria "{{ search_query }}".
+                    {% else %}
+                        No products are currently available in this category.
+                    {% endif %}
+                </p>
+                <a href="{% url 'products:product_list' %}" class="btn btn-primary">
+                    <i class="fas fa-arrow-left me-2"></i>View All Products
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    transition: all 0.3s ease;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.spec-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+}
+
+.spec-item {
+    display: flex;
+    align-items: center;
+}
+
+@media (min-width: 576px) {
+    .spec-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.card {
+    border-radius: 10px;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    transition: all 0.2s ease;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Auto-submit form when filters change
+    const filterForm = document.getElementById('filter-form');
+    const selects = filterForm.querySelectorAll('select');
+    
+    selects.forEach(select => {
+        select.addEventListener('change', function() {
+            filterForm.submit();
+        });
+    });
+});
+</script>
+{% endblock %}

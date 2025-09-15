@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+<!--Enforcing Newline After Block -->
+{% load static %}
+<!--Enforcing Newline After Block -->
+{% block title %}{{ page_title }}{% endblock %}
+<!--Enforcing Newline After Block -->
+{% block content %}
+<div class="container py-5">
+  <div class="row">
+    <div class="col-12">
+      <h1 class="mb-4">
+        <i class="fas fa-tachometer-alt me-2"></i>API Dashboard
+      </h1>
+
+      {% if is_admin %}
+      <div class="alert alert-warning">
+        <h5><i class="fas fa-crown me-2"></i>Administrator Access</h5>
+        <p class="mb-0">You have full API access as an administrator.</p>
+      </div>
+      {% endif %}
+
+      <!-- API Token Section -->
+      <div class="row mb-4">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5><i class="fas fa-key me-2"></i>Your API Token</h5>
+            </div>
+            <div class="card-body">
+              <div class="input-group mb-3">
+                <input
+                  type="text"
+                  class="form-control font-monospace"
+                  value="{{ token }}"
+                  readonly
+                  id="api-token"
+                />
+                <button
+                  class="btn btn-outline-secondary"
+                  type="button"
+                  onclick="copyToken('api-token')"
+                >
+                  <i class="fas fa-copy"></i> Copy
+                </button>
+              </div>
+              <small class="text-muted"
+                >Use this token in the Authorization header: Bearer {{ token
+                }}</small
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subscription Info -->
+      {% if subscription %}
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h5>
+                <i class="fas fa-info-circle me-2"></i>Subscription Details
+              </h5>
+            </div>
+            <div class="card-body">
+              <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
+              <p>
+                <strong>Type:</strong> {{
+                subscription.plan.get_plan_type_display }}
+              </p>
+              <p>
+                <strong>Rate Limit:</strong> {{ subscription.plan.api_rate_limit
+                }} calls/hour
+              </p>
+              <p>
+                <strong>Days Remaining:</strong> {{ subscription.days_remaining
+                }}
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header">
+              <h5><i class="fas fa-chart-bar me-2"></i>Usage Statistics</h5>
+            </div>
+            <div class="card-body">
+              <p>
+                <strong>API Calls Today:</strong> {{
+                api_usage.calls_today|default:0 }}
+              </p>
+              <p>
+                <strong>Remaining:</strong> {{
+                api_usage.limit|sub:api_usage.calls_today|default:api_usage.limit
+                }}
+              </p>
+              <div class="progress">
+                <div
+                  class="progress-bar"
+                  style="width: {{ api_usage.percentage|default:0 }}%"
+                ></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- API Documentation -->
+      <div class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5><i class="fas fa-book me-2"></i>Quick API Reference</h5>
+            </div>
+            <div class="card-body">
+              <h6>Base URL</h6>
+              <code
+                >{{ flask_api_url|default:"http://localhost:5000/api/v1"
+                }}</code
+              >
+
+              <h6 class="mt-3">Authentication</h6>
+              <pre><code>Authorization: Bearer {{ token }}</code></pre>
+
+              <h6 class="mt-3">Available Endpoints</h6>
+              <ul>
+                <li><code>GET /buoys</code> - List all IoT buoys</li>
+                <li>
+                  <code>GET /buoys/{id}/data</code> - Get real-time buoy data
+                </li>
+                {% if is_advanced_user %}
+                <li>
+                  <code>GET /environmental-data</code> - Environmental analytics
+                </li>
+                <li><code>GET /historical-data</code> - Historical datasets</li>
+                {% endif %}
+              </ul>
+
+              <h6 class="mt-3">Example Request</h6>
+              <pre><code>curl -X GET "{{ flask_api_url|default:"http://localhost:5000/api/v1" }}/buoys" \
+  -H "Authorization: Bearer {{ token }}" \
+  -H "Content-Type: application/json"</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyToken(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(element.value);
+
+    // Show feedback
+    const button = element.nextElementSibling;
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+    }, 2000);
+  }
+</script>
+{% endblock %}

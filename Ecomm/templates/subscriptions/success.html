@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+<!-- Enforcing New Line  -->
+{% load static %}
+<!-- Enforcing New Line  -->
+{% block title %}{{ page_title }}{% endblock %}
+<!-- Enforcing New Line  -->
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 text-center">
+      <div class="card shadow-sm">
+        <div class="card-body py-5">
+          <i class="fas fa-check-circle fa-4x text-success mb-4"></i>
+          <h1 class="text-success mb-4">Subscription Successful!</h1>
+          <p class="lead">Welcome to {{ subscription.plan.name }}!</p>
+
+          <div class="row mb-4">
+            <div class="col-md-6 offset-md-3">
+              <div class="alert alert-info">
+                <h5>Your API Access Details</h5>
+                <p><strong>Plan:</strong> {{ subscription.plan.name }}</p>
+                <p>
+                  <strong>Duration:</strong> {{ subscription.plan.duration_days
+                  }} days
+                </p>
+                <p>
+                  <strong>Rate Limit:</strong> {{
+                  subscription.plan.api_rate_limit }} calls/hour
+                </p>
+                <p class="mb-0">
+                  <strong>Expires:</strong> {{ subscription.end_date|date:"M d,
+                  Y" }}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {% if api_token %}
+          <div class="alert alert-warning">
+            <h6><i class="fas fa-key me-2"></i>Your API Token</h6>
+            <div class="input-group">
+              <input
+                type="text"
+                class="form-control font-monospace"
+                value="{{ api_token }}"
+                readonly
+                id="success-token"
+              />
+              <button
+                class="btn btn-outline-secondary"
+                type="button"
+                onclick="copyToken('success-token')"
+              >
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+            <small class="text-muted"
+              >Save this token securely - you'll need it for API requests</small
+            >
+          </div>
+          {% endif %}
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a
+              href="{% url 'subscriptions:api_dashboard' %}"
+              class="btn btn-primary btn-lg"
+            >
+              <i class="fas fa-tachometer-alt me-2"></i>Go to API Dashboard
+            </a>
+            <a
+              href="{% url 'subscriptions:my_subscriptions' %}"
+              class="btn btn-outline-primary btn-lg"
+            >
+              <i class="fas fa-list me-2"></i>My Subscriptions
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyToken(elementId) {
+    const element = document.getElementById(elementId);
+    element.select();
+    element.setSelectionRange(0, 99999);
+    navigator.clipboard.writeText(element.value);
+
+    const button = element.nextElementSibling;
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i>';
+    setTimeout(() => {
+      button.innerHTML = originalHTML;
+    }, 2000);
+  }
+</script>
+{% endblock %}

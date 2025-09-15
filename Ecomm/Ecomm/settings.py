@@ -32,6 +32,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# JWT Configuration
+JWT_SECRET_KEY = 'your-jwt-secret-key-here'  # Make sure this matches Flask
+
+
 # Application definition
 INSTALLED_APPS = [
     'jazzmin',
@@ -41,12 +45,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_otp', # For OTP support
+    'django_otp.plugins.otp_email',      # For email OTP
+    'django_otp.plugins.otp_totp',       # For authenticator apps
+    'two_factor',
+    'django.contrib.sites',
 
     # Third-party
     "rest_framework",
     "rest_framework_simplejwt",
     # Optional: enable token blacklist support if you want server-side logout
     "rest_framework_simplejwt.token_blacklist",
+    #'PyJWT',
 
     # My apps
     'accounts',
@@ -65,7 +75,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_otp.middleware.OTPMiddleware',
 ]
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')       
+EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'okocharlesogbonnia@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'sxjbvysrsputadjn')
+EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL', 'okocharlesogbonnia@gmail.com')
 
 ROOT_URLCONF = 'Ecomm.urls'
 
@@ -177,6 +197,9 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": False,
     "BLACKLIST_AFTER_ROTATION": True,
 }
+
+JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', 'your-jwt-secret-key-here')  # Use environment variable
+
 
 # Logging Configuration - Enhanced for debugging
 LOGGING = {
